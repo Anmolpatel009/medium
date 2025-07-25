@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X, ChevronDown, LogOut, LayoutDashboard, Briefcase, Users, DollarSign, Calendar, Star, Construction, FileText, UserCheck, MessageSquare } from 'lucide-react';
+import { Menu, X, ChevronDown, LogOut, LayoutDashboard, Briefcase, Users, DollarSign, Calendar, Star, Construction, FileText, UserCheck, MessageSquare, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import {
@@ -15,6 +15,7 @@ import {
 import { useAuth } from '@/hooks/use-auth';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePathname } from 'next/navigation';
+import { useTheme } from 'next-themes';
 
 
 const navLinks = [
@@ -65,6 +66,22 @@ const NavLink = ({ href, label, hasDropdown = false, children, onLinkClick }: { 
         </DropdownMenu>
     )
 };
+
+function ThemeToggle() {
+  const { setTheme, theme } = useTheme()
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+    >
+      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <span className="sr-only">Toggle theme</span>
+    </Button>
+  )
+}
 
 
 export default function Header() {
@@ -228,9 +245,11 @@ export default function Header() {
 
         <div className="hidden lg:flex items-center space-x-2">
            <AuthButtons />
+           <ThemeToggle />
         </div>
 
         <div className="lg:hidden flex items-center gap-2">
+            <ThemeToggle />
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
