@@ -3,15 +3,14 @@
 
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function Hero() {
   return (
     <section className="bg-secondary text-foreground py-20 md:py-28">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
           
-          <div className="text-center md:text-left">
+          <div className="text-center md:text-left md:col-span-2">
             <h1 className="text-4xl md:text-5xl font-serif-display font-bold mb-6 text-foreground leading-tight">
               Instantly connect with skilled local freelancers.
             </h1>
@@ -34,7 +33,7 @@ export default function Hero() {
             </p>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 h-full w-full">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 h-full w-full md:col-span-3">
               {/* Rotating Earth */}
               <div className="relative h-80 w-80">
                   <div className="absolute inset-0 rounded-full overflow-hidden shadow-lg">
