@@ -1,68 +1,78 @@
 
 'use client';
 
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { Stars } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import React, { useEffect } from "react";
+import { FiArrowRight } from "react-icons/fi";
+import {
+  useMotionTemplate,
+  useMotionValue,
+  motion,
+  animate,
+} from "framer-motion";
+import Link from "next/link";
+
+const COLORS_TOP = ["#13FFAA", "#1E67C6", "#CE84CF", "#DD335C"];
 
 export default function Hero() {
+  const color = useMotionValue(COLORS_TOP[0]);
+
+  useEffect(() => {
+    animate(color, COLORS_TOP, {
+      ease: "easeInOut",
+      duration: 10,
+      repeat: Infinity,
+      repeatType: "mirror",
+    });
+  }, [color]);
+
+  const backgroundImage = useMotionTemplate`radial-gradient(125% 125% at 50% 0%, #020617 50%, ${color})`;
+  const border = useMotionTemplate`1px solid ${color}`;
+  const boxShadow = useMotionTemplate`0px 4px 24px ${color}`;
+
   return (
-    <section className="animated-hero-bg text-foreground py-20 md:py-28">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
-          
-          <div className="text-center md:text-left md:col-span-2">
-            <h1 className="text-4xl md:text-5xl font-serif-display font-bold mb-6 text-foreground leading-tight">
-              Instantly connect with skilled local freelancers.
-            </h1>
-            <p className="text-lg md:text-xl max-w-xl mx-auto md:mx-0 mb-8 text-muted-foreground">
-             From house cleaning to high-tech, post a task and get instant notifications from top-rated talent in your area. Meet, collaborate, and get the job done faster.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
-                <Button asChild size="lg">
-                    <Link href="/signup">Join Now</Link>
-                </Button>
-                <Button asChild size="lg" variant="outline">
-                  <Link href="/showall">Show All</Link>
-                </Button>
-                 <Button asChild size="lg" variant="outline">
-                  <Link href="/nearby">Show Nearby</Link>
-                </Button>
-            </div>
-             <p className="text-sm text-muted-foreground mt-4 text-center md:text-left">
-                Free estimate &nbsp;•&nbsp; No obligation to hire &nbsp;•&nbsp; 100% risk-free
-            </p>
-          </div>
-
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 h-full w-full md:col-span-3">
-              {/* Rotating Earth */}
-              <div className="relative h-80 w-80">
-                  <div className="absolute inset-0 rounded-full overflow-hidden shadow-lg">
-                    <div className="h-full w-full earth-bg animate-spin-slow"></div>
-                  </div>
-
-                  {/* Skill Nodes */}
-                  <div className="absolute top-[20%] left-[50%] h-2 w-2 rounded-full bg-cyan-400 animate-ping-slow"></div>
-                  <div className="absolute top-[50%] left-[20%] h-3 w-3 rounded-full bg-red-500 animate-ping-slow animation-delay-300"></div>
-                  <div className="absolute top-[70%] left-[70%] h-2 w-2 rounded-full bg-yellow-400 animate-ping-slow animation-delay-500"></div>
-                  <div className="absolute top-[30%] left-[80%] h-2 w-2 rounded-full bg-green-400 animate-ping-slow animation-delay-700"></div>
-                  <div className="absolute bottom-[15%] right-[40%] h-3 w-3 rounded-full bg-purple-500 animate-ping-slow animation-delay-900"></div>
-                   {/* Rotating Text Strip */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <svg viewBox="0 0 100 100" className="w-full h-full animate-spin-reverse-slow">
-                        <defs>
-                          <path id="circle" d="M 50, 50 m -46, 0 a 46,46 0 1,1 92,0 a 46,46 0 1,1 -92,0"></path>
-                        </defs>
-                        <text>
-                          <textPath xlinkHref="#circle" className="fill-primary-foreground dark:fill-primary font-bold text-[6px] tracking-widest uppercase">
-                            Connect with talent across the globe •
-                          </textPath>
-                        </text>
-                      </svg>
-                    </div>
-              </div>
-          </div>
-        </div>
+    <motion.section
+      style={{
+        backgroundImage,
+      }}
+      className="relative grid min-h-screen place-content-center overflow-hidden bg-gray-950 px-4 py-24 text-gray-200"
+    >
+      <div className="relative z-10 flex flex-col items-center">
+        <span className="mb-1.5 inline-block rounded-full bg-gray-600/50 px-3 py-1.5 text-sm">
+          Find Your Next Opportunity
+        </span>
+        <h1 className="max-w-4xl bg-gradient-to-br from-white to-gray-400 bg-clip-text text-center text-3xl font-medium leading-tight text-transparent sm:text-5xl sm:leading-tight md:text-7xl md:leading-tight">
+          Connect with Skilled Local Freelancers Instantly
+        </h1>
+        <p className="my-6 max-w-xl text-center text-base leading-relaxed md:text-lg md:leading-relaxed">
+          From house cleaning to high-tech, post a task and get instant notifications from top-rated talent in your area. Meet, collaborate, and get the job done faster.
+        </p>
+        <Link href="/signup">
+            <motion.button
+            style={{
+                border,
+                boxShadow,
+            }}
+            whileHover={{
+                scale: 1.015,
+            }}
+            whileTap={{
+                scale: 0.985,
+            }}
+            className="group relative flex w-fit items-center gap-1.5 rounded-full bg-gray-950/10 px-4 py-2 text-gray-50 transition-colors hover:bg-gray-950/50"
+            >
+            Join Now
+            <FiArrowRight className="transition-transform group-hover:-rotate-45 group-active:-rotate-12" />
+            </motion.button>
+        </Link>
       </div>
-    </section>
+
+      <div className="absolute inset-0 z-0">
+        <Canvas>
+          <Stars radius={50} count={2500} factor={4} fade speed={2} />
+        </Canvas>
+      </div>
+    </motion.section>
   );
-}
+};

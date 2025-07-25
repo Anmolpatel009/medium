@@ -126,34 +126,6 @@ export default {
           from: { transform: 'rotate(360deg)' },
           to: { transform: 'rotate(0deg)' },
         },
-        "color": {
-          '0%, 25%': { '--bg': 'var(--c3)' },
-          '26%, 50%': { '--bg': 'var(--c1)' },
-          '51%, 75%': { '--bg': 'var(--c3)' },
-          '76%, 100%': { '--bg': 'var(--c2)' },
-        },
-        "position": {
-          '0%': {
-            backgroundPosition:
-              'calc(var(--p) * 1) calc(var(--p) * 0), calc(var(--p) * -1) calc(var(--p) * 1), calc(var(--p) * 1) calc(var(--p) * -1), calc(var(--p) * -1) calc(var(--p) * 0)',
-          },
-          '25%': {
-            backgroundPosition:
-              'calc(var(--p) * 1) calc(var(--p) * 4), calc(var(--p) * -1) calc(var(--p) * 5), calc(var(--p) * 1) calc(var(--p) * 3), calc(var(--p) * -1) calc(var(--p) * 4)',
-          },
-          '50%': {
-            backgroundPosition:
-              'calc(var(--p) * 3) calc(var(--p) * 8), calc(var(--p) * -3) calc(var(--p) * 9), calc(var(--p) * 2) calc(var(--p) * 7), calc(var(--p) * -2) calc(var(--p) * 8)',
-          },
-          '75%': {
-            backgroundPosition:
-              'calc(var(--p) * 3) calc(var(--p) * 12), calc(var(--p) * -3) calc(var(--p) * 13), calc(var(--p) * 2) calc(var(--p) * 11), calc(var(--p) * -2) calc(var(--p) * 12)',
-          },
-          '100%': {
-            backgroundPosition:
-              'calc(var(--p) * 5) calc(var(--p) * 16), calc(var(--p) * -5) calc(var(--p) * 17), calc(var(--p) * 5) calc(var(--p) * 15), calc(var(--p) * -5) calc(var(--p) * 16)',
-          },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
