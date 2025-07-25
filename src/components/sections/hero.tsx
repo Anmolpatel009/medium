@@ -8,7 +8,7 @@ import { Users, Search } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="bg-secondary">
+    <section className="relative overflow-hidden hero-bg-layered">
         <div className="container grid md:grid-cols-5 gap-8 items-center min-h-[calc(100vh-4rem)] py-12">
             <div className="space-y-6 text-center md:text-left animate-fade-in-up md:col-span-2">
                 <Badge variant="outline" className="text-base">
