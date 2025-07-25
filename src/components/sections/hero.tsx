@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function Hero() {
   return (
-    <section className="bg-secondary text-foreground py-20 md:py-28">
+    <section className="animated-hero-bg text-foreground py-20 md:py-28">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
           
