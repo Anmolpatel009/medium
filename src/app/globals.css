@@ -249,7 +249,6 @@
 .hero-bg-layered::before {
     width: 20rem;
     height: 20rem;
-    background-color: hsla(var(--primary) / 0.15);
     top: -5rem;
     left: -5rem;
 }
@@ -257,11 +256,19 @@
 .hero-bg-layered::after {
     width: 24rem;
     height: 24rem;
-    background-color: hsla(var(--accent) / 0.15);
     bottom: -8rem;
     right: -8rem;
     z-index: 0;
 }
+
+.light .hero-bg-layered::before {
+    background-color: hsla(220, 90%, 50%, 0.1);
+}
+
+.light .hero-bg-layered::after {
+    background-color: hsla(320, 90%, 50%, 0.1);
+}
+
 
 .dark .hero-bg-layered::before {
     background-color: hsla(220, 90%, 50%, 0.2);
