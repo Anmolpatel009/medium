@@ -4,13 +4,13 @@
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Briefcase, Search } from 'lucide-react';
 
 export default function Hero() {
   return (
     <section className="bg-secondary">
-        <div className="container grid md:grid-cols-2 gap-8 items-center min-h-[calc(100vh-4rem)] py-12">
-            <div className="space-y-6 text-center md:text-left animate-fade-in-up">
+        <div className="container grid md:grid-cols-5 gap-8 items-center min-h-[calc(100vh-4rem)] py-12">
+            <div className="space-y-6 text-center md:text-left animate-fade-in-up md:col-span-2">
                 <Badge variant="outline" className="text-base">
                     Now in Beta!
                 </Badge>
@@ -22,16 +22,23 @@ export default function Hero() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                     <Button size="lg" asChild>
-                        <Link href="/signup">
-                            Get Started Now <ArrowRight className="ml-2" />
-                        </Link>
+                      <Link href="/signup?role=client">
+                        <Briefcase className="mr-2" /> Post a Task
+                      </Link>
                     </Button>
                     <Button size="lg" variant="outline" asChild>
-                        <Link href="/why-talentflow">Learn More</Link>
+                      <Link href="/find-talent">
+                        <Search className="mr-2" /> Find a Freelancer
+                      </Link>
+                    </Button>
+                    <Button size="lg" variant="outline" asChild>
+                      <Link href="/find-work">
+                          Browse All Work
+                      </Link>
                     </Button>
                 </div>
             </div>
-            <div className="relative hidden md:flex items-center justify-center h-full animate-fade-in-down">
+            <div className="relative hidden md:flex items-center justify-center h-full animate-fade-in-down md:col-span-3">
                 <div className="relative w-80 h-80 rounded-full earth-bg animate-spin-slow">
                 </div>
             </div>
