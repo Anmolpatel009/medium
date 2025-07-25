@@ -4,7 +4,7 @@
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Briefcase, Search } from 'lucide-react';
+import { Users, Search } from 'lucide-react';
 
 export default function Hero() {
   return (
@@ -22,8 +22,8 @@ export default function Hero() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                     <Button size="lg" asChild>
-                      <Link href="/signup?role=client">
-                        <Briefcase className="mr-2" /> Post a Task
+                      <Link href="/showall">
+                        <Users className="mr-2" /> Show All Freelancers
                       </Link>
                     </Button>
                     <Button size="lg" variant="outline" asChild>
