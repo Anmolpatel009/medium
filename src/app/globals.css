@@ -262,11 +262,11 @@
 }
 
 .light .hero-bg-layered::before {
-    background-color: hsla(220, 90%, 50%, 0.1);
+    background-color: hsla(210, 100%, 70%, 0.2);
 }
 
 .light .hero-bg-layered::after {
-    background-color: hsla(320, 90%, 50%, 0.1);
+    background-color: hsla(320, 100%, 80%, 0.15);
 }
 
 
