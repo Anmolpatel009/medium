@@ -61,30 +61,6 @@ export default function Hero() {
                       </svg>
                     </div>
               </div>
-              
-              {/* Shaking Notification Card */}
-              <div className="hero-card animate-tilt-shaking">
-                  <div className="notification">
-                    <div className="notification-header">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="notification-logo text-blue-400">
-                          <path fillRule="evenodd" d="M12.963 2.286a.75.75 0 00-1.071 1.071l9 9a.75.75 0 001.071-1.071l-9-9zM12 3a9 9 0 100 18 9 9 0 000-18zM3.75 12a8.25 8.25 0 1116.5 0 8.25 8.25 0 01-16.5 0z" clipRule="evenodd" />
-                      </svg>
-                      <span>TalentFlow • now</span>
-                    </div>
-                    <p className="notification-title">New Task Posted</p>
-                    <p className="notification-body">"I need a logo designed for my new coffee shop brand..."</p>
-                  </div>
-                  <div className="notification payment">
-                      <div className="notification-header">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="notification-logo text-green-400">
-                            <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
-                        </svg>
-                       <span>TalentFlow Payments • 1m ago</span>
-                    </div>
-                    <p className="notification-title">Payment Received</p>
-                    <p className="notification-body">+ ₹12,500.00</p>
-                  </div>
-              </div>
           </div>
         </div>
       </div>
