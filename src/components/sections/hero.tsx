@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 export default function Hero() {
   return (
-    <section className="bg-background text-foreground py-20 md:py-28">
+    <section className="bg-secondary/30 text-foreground py-20 md:py-28">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           
