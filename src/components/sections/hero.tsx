@@ -37,8 +37,90 @@ export default function Hero() {
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 h-full w-full">
               {/* Rotating Earth */}
               <div className="relative h-80 w-80">
-                  <div className="absolute inset-0 rounded-full overflow-hidden shadow-lg bg-black">
+                  <div className="absolute inset-0 rounded-full overflow-hidden shadow-lg">
+                    <div className="section-banner"></div>
                   </div>
+
+                  {/* Stars for Earth */}
+                   <div>
+                    <div id="star-1">
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-bottomright"></div>
+                        <div id="curved-corner-bottomleft"></div>
+                      </div>
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-topright"></div>
+                        <div id="curved-corner-topleft"></div>
+                      </div>
+                    </div>
+
+                    <div id="star-2">
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-bottomright"></div>
+                        <div id="curved-corner-bottomleft"></div>
+                      </div>
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-topright"></div>
+                        <div id="curved-corner-topleft"></div>
+                      </div>
+                    </div>
+
+                    <div id="star-3">
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-bottomright"></div>
+                        <div id="curved-corner-bottomleft"></div>
+                      </div>
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-topright"></div>
+                        <div id="curved-corner-topleft"></div>
+                      </div>
+                    </div>
+
+                    <div id="star-4">
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-bottomright"></div>
+                        <div id="curved-corner-bottomleft"></div>
+                      </div>
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-topright"></div>
+                        <div id="curved-corner-topleft"></div>
+                      </div>
+                    </div>
+
+                    <div id="star-5">
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-bottomright"></div>
+                        <div id="curved-corner-bottomleft"></div>
+                      </div>
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-topright"></div>
+                        <div id="curved-corner-topleft"></div>
+                      </div>
+                    </div>
+
+                    <div id="star-6">
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-bottomright"></div>
+                        <div id="curved-corner-bottomleft"></div>
+                      </div>
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-topright"></div>
+                        <div id="curved-corner-topleft"></div>
+                      </div>
+                    </div>
+
+                    <div id="star-7">
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-bottomright"></div>
+                        <div id="curved-corner-bottomleft"></div>
+                      </div>
+                      <div className="curved-corner-star">
+                        <div id="curved-corner-topright"></div>
+                        <div id="curved-corner-topleft"></div>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Skill Nodes */}
                   <div className="absolute top-[20%] left-[50%] h-2 w-2 rounded-full bg-cyan-400 animate-ping-slow"></div>
                   <div className="absolute top-[50%] left-[20%] h-3 w-3 rounded-full bg-red-500 animate-ping-slow animation-delay-300"></div>

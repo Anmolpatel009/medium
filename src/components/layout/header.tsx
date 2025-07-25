@@ -175,6 +175,43 @@ export default function Header() {
     )
   }
 
+  const renderNavLinks = () => {
+    if (isDashboard && user) {
+      // Assuming user role is determined by email for now
+      const navItems = user.email?.includes('client') ? clientNav : freelancerNav;
+      return (
+        <nav className="hidden lg:flex items-center space-x-2 text-sm font-medium">
+          {navItems.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="group nav-btn flex items-center gap-1 transition-colors hover:text-primary text-foreground/80"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      );
+    } else if (!isDashboard) {
+      return (
+        <nav className="hidden lg:flex items-center space-x-2 text-sm font-medium">
+          {navLinks.map((link) => (
+            <NavLink key={link.href} href={link.href} label={link.label} />
+          ))}
+          <NavLink label="Explore" hasDropdown>
+            <DropdownMenuItem asChild>
+              <Link href="/nearby">Nearby</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/showall">Show All</Link>
+            </DropdownMenuItem>
+          </NavLink>
+        </nav>
+      );
+    }
+    return null; // Render nothing if not on dashboard and no user, or other cases
+  };
+
   return (
     <header className="bg-background w-full border-b sticky top-0 z-40">
       <div className="container flex h-16 items-center justify-between">
@@ -187,21 +224,7 @@ export default function Header() {
           </span>
         </Link>
         
-        {!isDashboard && (
-             <nav className="hidden lg:flex items-center space-x-2 text-sm font-medium">
-                {navLinks.map((link) => (
-                    <NavLink key={link.href} href={link.href} label={link.label} />
-                ))}
-                <NavLink label="Explore" hasDropdown>
-                        <DropdownMenuItem asChild>
-                            <Link href="/nearby">Nearby</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                            <Link href="/showall">Show All</Link>
-                        </DropdownMenuItem>
-                    </NavLink>
-            </nav>
-        )}
+        {renderNavLinks()}
 
         <div className="hidden lg:flex items-center space-x-2">
            <AuthButtons />
