@@ -7,13 +7,7 @@ import AiRecommender from '@/components/sections/ai-recommender';
 import Footer from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
-import { Skeleton } from '@/components/ui/skeleton';
-
-const Hero = dynamic(() => import('@/components/sections/hero'), { 
-    ssr: false,
-    loading: () => <Skeleton className="h-screen w-full" />,
-});
+import Hero from '@/components/sections/hero';
 
 export default function Home() {
   return (

@@ -94,37 +94,9 @@ export default {
                 transform: "translateY(0)"
             }
         },
-        "float": {
-          "0%": { transform: 'translate(0px, 0px)' },
-          "20%": { transform: 'translate(10px, -5px)' },
-          "40%": { transform: 'translate(-5px, 10px)' },
-          "60%": { transform: 'translate(5px, 5px)' },
-          "80%": { transform: 'translate(-10px, -10px)' },
-          "100%": { transform: 'translate(0px, 0px)' },
-        },
-        "ping-slow": {
-          '75%, 100%': {
-            transform: 'scale(2)',
-            opacity: '0',
-          },
-        },
-        "rgb-border": {
-          '0%, 100%': { 'box-shadow': '0 0 0.5rem 0.1rem rgba(0, 255, 255, 0.5)' },
-          '25%': { 'box-shadow': '0 0 0.5rem 0.1rem rgba(255, 0, 255, 0.5)' },
-          '50%': { 'box-shadow': '0 0 0.5rem 0.1rem rgba(255, 255, 0, 0.5)' },
-          '75%': { 'box-shadow': '0 0 0.5rem 0.1rem rgba(0, 255, 0, 0.5)' },
-        },
-         "tilt-shaking": {
-          '0%, 100%': { transform: 'rotate(0deg) rotate3d(5, 5, 10, -10deg)' },
-          '50%': { transform: 'rotate(5deg) rotate3d(5, 5, 10, 10deg)' },
-        },
         "spin-slow": {
           from: { transform: 'rotate(0deg)' },
           to: { transform: 'rotate(360deg)' },
-        },
-        "spin-reverse-slow": {
-          from: { transform: 'rotate(360deg)' },
-          to: { transform: 'rotate(0deg)' },
         },
       },
       animation: {
@@ -132,12 +104,7 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in-down": "fade-in-down 0.5s ease-out forwards",
         "fade-in-up": "fade-in-up 0.5s ease-out forwards",
-        "float": "float 5s ease-in-out infinite",
-        "ping-slow": 'ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite',
-        "rgb-border": 'rgb-border 4s linear infinite',
-        "tilt-shaking": 'tilt-shaking 4s infinite',
         "spin-slow": 'spin-slow 25s linear infinite',
-        "spin-reverse-slow": 'spin-reverse-slow 25s linear infinite',
       },
     },
   },
