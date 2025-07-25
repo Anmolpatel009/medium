@@ -38,7 +38,7 @@ export default function Hero() {
                     </Button>
                 </div>
             </div>
-            <div className="relative hidden md:flex items-center justify-center h-full animate-fade-in-down md:col-span-3">
+            <div className="relative hidden md:flex items-center justify-end h-full animate-fade-in-down md:col-span-3">
                 <div className="relative w-80 h-80 rounded-full earth-bg animate-spin-slow">
                 </div>
             </div>
