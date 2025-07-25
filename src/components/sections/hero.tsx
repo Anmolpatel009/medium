@@ -38,7 +38,7 @@ export default function Hero() {
               {/* Rotating Earth */}
               <div className="relative h-80 w-80">
                   <div className="absolute inset-0 rounded-full overflow-hidden shadow-lg">
-                    <div className="h-full w-full earth-bg"></div>
+                    <div className="h-full w-full earth-bg animate-spin-slow"></div>
                   </div>
 
                   {/* Skill Nodes */}
