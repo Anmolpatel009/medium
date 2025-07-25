@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const Hero = dynamic(() => import('@/components/sections/hero'), { 
     ssr: false,
-    loading: () => <Skeleton className="h-[600px] w-full" />,
+    loading: () => <Skeleton className="h-screen w-full" />,
 });
 
 export default function Home() {

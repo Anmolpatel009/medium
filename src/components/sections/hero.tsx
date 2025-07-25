@@ -1,8 +1,6 @@
 
 'use client';
 
-import { Stars } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
 import React, { useEffect } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import {
@@ -12,6 +10,7 @@ import {
   animate,
 } from "framer-motion";
 import Link from "next/link";
+import HeroCanvas from "./hero-canvas";
 
 const COLORS_TOP = ["#13FFAA", "#1E67C6", "#CE84CF", "#DD335C"];
 
@@ -25,7 +24,7 @@ export default function Hero() {
       repeat: Infinity,
       repeatType: "mirror",
     });
-  }, []);
+  }, [color]);
 
   const backgroundImage = useMotionTemplate`radial-gradient(125% 125% at 50% 0%, #020617 50%, ${color})`;
   const border = useMotionTemplate`1px solid ${color}`;
@@ -67,12 +66,7 @@ export default function Hero() {
             </motion.button>
         </Link>
       </div>
-
-      <div className="absolute inset-0 z-0">
-        <Canvas>
-          <Stars radius={50} count={2500} factor={4} fade speed={2} />
-        </Canvas>
-      </div>
+      <HeroCanvas />
     </motion.section>
   );
 };
