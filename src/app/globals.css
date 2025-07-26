@@ -266,11 +266,11 @@
 }
 
 .light .hero-bg-layered::before {
-    background-color: hsla(210, 80%, 80%, 0.5);
+    background-color: hsla(210, 80%, 80%, 0.7);
 }
 
 .light .hero-bg-layered::after {
-    background-color: hsla(190, 80%, 75%, 0.5);
+    background-color: hsla(190, 80%, 75%, 0.7);
 }
 
 
@@ -286,4 +286,20 @@
 .hero-bg-layered > * {
     z-index: 1;
     position: relative;
+}
+
+.scrolling-ticker-container .scrolling-ticker {
+    display: flex;
+    flex-shrink: 0;
+    white-space: nowrap;
+    animation: scroll-horizontal 40s linear infinite;
+}
+
+@keyframes scroll-horizontal {
+    from {
+        transform: translateX(0%);
+    }
+    to {
+        transform: translateX(-50%);
+    }
 }
