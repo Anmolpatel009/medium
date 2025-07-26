@@ -1,28 +1,28 @@
 
 'use client';
 
-import { Gem, Code, Palette, PenTool, Database, Cloud, BarChart2, Shield, Bot, Video, Mic, Gamepad2, ShoppingCart, MessageSquare, Briefcase, Users, FileText, DollarSign, Calendar, Star } from 'lucide-react';
+import { Gem, Code, Palette, PenTool, Database, Cloud, BarChart2, Shield, Bot, Video, Mic, Gamepad2, ShoppingCart, MessageSquare, Briefcase, Users, FileText, DollarSign, Calendar, Star, Home, Wrench, Zap, Scissors, Dumbbell, Camera, BookOpen, ChefHat, Dog } from 'lucide-react';
 
 const categories = [
   { name: 'Web Development', icon: Code },
   { name: 'Graphic Design', icon: Palette },
+  { name: 'Home Cleaning', icon: Home },
   { name: 'Content Writing', icon: PenTool },
-  { name: 'Database Management', icon: Database },
-  { name: 'Cloud Services', icon: Cloud },
-  { name: 'Data Analytics', icon: BarChart2 },
-  { name: 'Cybersecurity', icon: Shield },
+  { name: 'Plumbing Services', icon: Wrench },
   { name: 'AI & Machine Learning', icon: Bot },
+  { name: 'Electrician', icon: Zap },
+  { name: 'Haircut & Styling', icon: Scissors },
   { name: 'Video Editing', icon: Video },
-  { name: 'Voice Over', icon: Mic },
-  { name: 'Game Development', icon: Gamepad2 },
+  { name: 'Personal Training', icon: Dumbbell },
+  { name: 'Photography', icon: Camera },
   { name: 'E-commerce Solutions', icon: ShoppingCart },
+  { name: 'Tutoring', icon: BookOpen },
   { name: 'Social Media Management', icon: Users },
-  { name: 'Project Management', icon: Briefcase },
+  { name: 'Cooking & Catering', icon: ChefHat },
   { name: 'Mobile App Development', icon: Gem },
   { name: 'UI/UX Design', icon: Palette },
   { name: 'SEO Optimization', icon: Star },
-  { name: 'Legal Services', icon: FileText },
-  { name: 'Financial Consulting', icon: DollarSign },
+  { name: 'Pet Services', icon: Dog },
   { name: 'Virtual Assistance', icon: Calendar },
 ];
 
