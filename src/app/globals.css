@@ -212,10 +212,14 @@
     position: relative;
 }
 
-.scrolling-ticker-container .scrolling-ticker {
+.scrolling-ticker-container {
     display: flex;
     flex-shrink: 0;
     white-space: nowrap;
+}
+
+.scrolling-ticker-container .scrolling-ticker {
+    display: flex;
     animation: scroll-horizontal 40s linear infinite;
 }
 
