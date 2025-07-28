@@ -55,7 +55,7 @@ function QuickJobsView() {
     return (
         <div className="bg-background">
             {/* Hero Section */}
-            <section className="py-16 lg:py-24 text-center hero-bg-layered">
+            <section className="relative overflow-hidden py-16 lg:py-24 text-center hero-bg-layered">
                 <div className="container">
                     <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Your to-do list, done.</h1>
                     <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
