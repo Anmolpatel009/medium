@@ -28,11 +28,19 @@ const categories = [
 
 export default function CategoryTicker() {
   return (
-    <div className="w-full overflow-hidden bg-secondary/50 border-b">
-      <div className="scrolling-ticker-container flex">
+    <div className="w-full overflow-hidden bg-secondary border-b">
+      <div className="scrolling-ticker-container">
         <div className="scrolling-ticker">
-          {[...categories, ...categories].map((category, index) => (
-            <div key={index} className="flex items-center gap-2 px-6 py-2 text-sm text-muted-foreground whitespace-nowrap">
+          {categories.map((category, index) => (
+            <div key={index} className="flex items-center gap-2 px-6 py-2 text-sm text-secondary-foreground whitespace-nowrap">
+              <category.icon className="h-4 w-4" />
+              <span>{category.name}</span>
+            </div>
+          ))}
+        </div>
+        <div className="scrolling-ticker">
+          {categories.map((category, index) => (
+            <div key={index} className="flex items-center gap-2 px-6 py-2 text-sm text-secondary-foreground whitespace-nowrap">
               <category.icon className="h-4 w-4" />
               <span>{category.name}</span>
             </div>
