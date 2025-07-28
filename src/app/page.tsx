@@ -11,15 +11,17 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Hero from '@/components/sections/hero';
 import ViewSwitcher from '@/components/view-switcher';
-import { Construction, Home, Wrench, Package, PawPrint, Search, User, Calendar, CheckCircle, CookingPot, ShoppingBasket, Shirt, Paintbrush, Utensils, Zap } from 'lucide-react';
+import { Zap } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
+import FeaturedFreelancers from '@/components/sections/featured-freelancers';
 
 function ProfessionalView() {
   return (
     <>
       <Hero />
+      <FeaturedFreelancers />
       <section className="py-16 lg:py-24 bg-secondary">
         <div className="container">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
