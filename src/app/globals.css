@@ -179,10 +179,6 @@
     background-color: hsl(var(--background));
 }
 
-.light .hero-bg-layered {
-    background-color: hsl(210, 80%, 96%);
-}
-
 .hero-bg-layered::before,
 .hero-bg-layered::after {
     content: '';
@@ -197,6 +193,7 @@
     height: 20rem;
     top: -5rem;
     left: -5rem;
+    background-color: hsla(var(--primary), 0.2);
 }
 
 .hero-bg-layered::after {
@@ -205,23 +202,7 @@
     bottom: -8rem;
     right: -8rem;
     z-index: 0;
-}
-
-.light .hero-bg-layered::before {
-    background-color: hsla(210, 80%, 90%, 0.9);
-}
-
-.light .hero-bg-layered::after {
-    background-color: hsla(340, 80%, 90%, 0.9);
-}
-
-
-.dark .hero-bg-layered::before {
-    background-color: hsla(220, 90%, 50%, 0.2);
-}
-
-.dark .hero-bg-layered::after {
-    background-color: hsla(320, 90%, 50%, 0.2);
+    background-color: hsla(var(--secondary), 0.2);
 }
 
 /* Ensure content is above the background layers */
