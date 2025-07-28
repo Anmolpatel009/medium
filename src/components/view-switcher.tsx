@@ -12,7 +12,7 @@ export default function ViewSwitcher({ activeView, setActiveView }: ViewSwitcher
   return (
     <div className="bg-secondary/30 py-3">
         <div className="container">
-            <div className="flex flex-col sm:flex-row items-center bg-background p-1 rounded-xl border w-full">
+            <div className="flex flex-col sm:flex-row items-center w-full">
                  <div 
                     onClick={() => setActiveView('professional')}
                     className={cn(
