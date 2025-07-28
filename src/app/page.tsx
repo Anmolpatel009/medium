@@ -112,11 +112,11 @@ function QuickJobsView() {
             </section>
             
             {/* Ticker Section */}
-            <div className="w-full overflow-hidden bg-white/50 dark:bg-black/20 backdrop-blur-sm border-y border-gray-200 dark:border-gray-800">
+            <div className="w-full overflow-hidden bg-muted border-y">
                 <div className="scrolling-ticker-container flex">
                     <div className="scrolling-ticker">
                     {[...popularJobs, ...popularJobs].map((job, index) => (
-                        <div key={index} className="flex items-center gap-2 px-8 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                        <div key={index} className="flex items-center gap-2 px-8 py-3 text-sm font-medium text-foreground/80 whitespace-nowrap">
                             <span>{job}</span>
                         </div>
                     ))}
