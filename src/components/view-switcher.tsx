@@ -10,13 +10,13 @@ type ViewSwitcherProps = {
 
 export default function ViewSwitcher({ activeView, setActiveView }: ViewSwitcherProps) {
   return (
-    <div className="bg-secondary/30 py-4">
-        <div className="container flex justify-center">
-            <div className="inline-flex items-center bg-background p-1 rounded-xl border">
+    <div className="bg-secondary/30 py-3">
+        <div className="container">
+            <div className="flex flex-col sm:flex-row items-center bg-background p-1 rounded-xl border w-full">
                  <button 
                     onClick={() => setActiveView('professional')}
                     className={cn(
-                        "view-switcher-button",
+                        "view-switcher-button w-full sm:w-1/2 justify-center",
                         { 'active': activeView === 'professional' }
                     )}
                  >
@@ -25,11 +25,11 @@ export default function ViewSwitcher({ activeView, setActiveView }: ViewSwitcher
                  <button 
                     onClick={() => setActiveView('quick-jobs')}
                     className={cn(
-                        "view-switcher-button",
+                        "view-switcher-button w-full sm:w-1/2 justify-center",
                         { 'active': activeView === 'quick-jobs' }
                     )}
                 >
-                    <span>Quick Jobs</span>
+                    <span>Quick</span>
                 </button>
             </div>
         </div>

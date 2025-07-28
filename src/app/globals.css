@@ -314,6 +314,8 @@
   font-size: 1.1em; /* Adjusted size */
   cursor: pointer;
   border: none;
+  display: flex;
+  align-items: center;
 }
 
 .view-switcher-button.active {
@@ -360,4 +362,3 @@
 .view-switcher-button:hover::after {
   opacity: 1;
 }
-
