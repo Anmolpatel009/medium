@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/components/layout/header';
 import TaskList from '@/components/task-list';
 import AiRecommender from '@/components/sections/ai-recommender';
@@ -51,7 +51,41 @@ const quickJobCategories = [
     { name: 'Laundry', icon: Shirt },
     { name: 'Cooking', icon: CookingPot },
     { name: 'Furniture Assembly', icon: Construction },
-]
+];
+
+const exampleTasks = [
+    "Assemble my new desk",
+    "Clean my apartment",
+    "Get my groceries delivered",
+    "Walk my dog this afternoon",
+    "Mount my TV on the wall",
+    "Get help moving a couch",
+];
+
+function AnimatedHeadline() {
+    const [index, setIndex] = useState(0);
+    const [fade, setFade] = useState(true);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setFade(false); // Start fade out
+            setTimeout(() => {
+                setIndex((prevIndex) => (prevIndex + 1) % exampleTasks.length);
+                setFade(true); // Start fade in
+            }, 500); // Time for fade out animation
+        }, 3000); // Change task every 3 seconds
+
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="h-24 md:h-32 flex items-center justify-center">
+             <h1 className={`text-4xl md:text-5xl font-bold font-headline mb-4 text-center transition-opacity duration-500 ${fade ? 'animate-fade-in-down' : 'animate-fade-out-up'}`}>
+                {exampleTasks[index]}
+            </h1>
+        </div>
+    )
+}
 
 function QuickJobsView() {
     return (
@@ -59,7 +93,7 @@ function QuickJobsView() {
             {/* Hero Section */}
             <section className="relative overflow-hidden py-16 lg:py-24 text-center hero-bg-layered">
                 <div className="container">
-                    <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Your to-do list, done in hours.</h1>
+                    <AnimatedHeadline />
                     <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
                         Connect with trusted local Taskers for everything from cleaning to handyman jobs. Fast, reliable help is just around the corner.
                     </p>
