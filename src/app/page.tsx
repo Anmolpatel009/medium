@@ -89,7 +89,7 @@ const FlipClock = () => {
 
 function QuickJobsView() {
     return (
-        <div className="bg-gradient-to-br from-indigo-50 via-white to-rose-50 dark:from-gray-900 dark:via-black dark:to-indigo-950 text-gray-800 dark:text-gray-200">
+        <div className="bg-gradient-to-br from-indigo-50 via-white to-rose-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-indigo-950 text-gray-800 dark:text-gray-200">
             {/* Hero Section */}
             <section className="relative overflow-hidden py-12 lg:py-20">
                 <div className="container grid md:grid-cols-3 items-center justify-center gap-8 text-center">
