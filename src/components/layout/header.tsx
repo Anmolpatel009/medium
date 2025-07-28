@@ -16,6 +16,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import { cn } from '@/lib/utils';
 
 
 const navLinks = [
@@ -68,19 +69,24 @@ const NavLink = ({ href, label, hasDropdown = false, children, onLinkClick }: { 
 };
 
 function ThemeToggle() {
-  const { setTheme, theme } = useTheme()
+  const { setTheme, theme } = useTheme();
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-    >
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-      <span className="sr-only">Toggle theme</span>
-    </Button>
-  )
+    <div className="flex items-center gap-2">
+      <button
+        onClick={() => setTheme('light')}
+        className={cn('view-switcher-button view-switcher-button-sm', { active: theme === 'light' })}
+      >
+        <span>Light</span>
+      </button>
+      <button
+        onClick={() => setTheme('dark')}
+        className={cn('view-switcher-button view-switcher-button-sm', { active: theme === 'dark' })}
+      >
+        <span>Dark</span>
+      </button>
+    </div>
+  );
 }
 
 
@@ -253,7 +259,18 @@ export default function Header() {
         </div>
 
         <div className="lg:hidden flex items-center gap-2">
-            <ThemeToggle />
+            <div className="flex items-center">
+              <button
+                onClick={() => {
+                  const { setTheme, theme } = useTheme();
+                  setTheme(theme === 'light' ? 'dark' : 'light');
+                }}
+                className="p-2 rounded-full hover:bg-accent"
+              >
+              <Sun className="h-5 w-5 block dark:hidden" />
+              <Moon className="h-5 w-5 hidden dark:block" />
+              </button>
+            </div>
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
