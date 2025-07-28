@@ -10,9 +10,9 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Hero from '@/components/sections/hero';
 import ViewSwitcher from '@/components/view-switcher';
-import { Construction, Home, Wrench, Package, PawPrint, Search, User, Calendar, CheckCircle } from 'lucide-react';
+import { Construction, Home, Wrench, Package, PawPrint, Search, User, Calendar, CheckCircle, CookingPot, ShoppingBasket, Shirt } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 function ProfessionalView() {
   return (
@@ -46,9 +46,11 @@ const quickJobCategories = [
     { name: 'Handyman', icon: Wrench },
     { name: 'Cleaning', icon: Home },
     { name: 'Moving Help', icon: Package },
-    { name: 'Pet Care', icon: PawPrint },
-    { name: 'Gardening', icon: Wrench },
-    { name: 'Assembly', icon: Wrench },
+    { name: 'Pet Walking', icon: PawPrint },
+    { name: 'Shopping', icon: ShoppingBasket },
+    { name: 'Laundry', icon: Shirt },
+    { name: 'Cooking', icon: CookingPot },
+    { name: 'Furniture Assembly', icon: Construction },
 ]
 
 function QuickJobsView() {
@@ -57,16 +59,16 @@ function QuickJobsView() {
             {/* Hero Section */}
             <section className="relative overflow-hidden py-16 lg:py-24 text-center hero-bg-layered">
                 <div className="container">
-                    <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Your to-do list, done.</h1>
+                    <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Your to-do list, done in hours.</h1>
                     <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                        Find trusted local help for everyday tasks. From cleaning to handyman jobs, get it done quickly and easily.
+                        Connect with trusted local Taskers for everything from cleaning to handyman jobs. Fast, reliable help is just around the corner.
                     </p>
                     <div className="flex max-w-xl mx-auto">
                         <div className="relative flex-grow">
                              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                             <Input placeholder="Search for a service, e.g. 'house cleaning'" className="h-12 pl-10 text-base" />
+                             <Input placeholder="What do you need help with today?" className="h-12 pl-10 text-base" />
                         </div>
-                        <Button size="lg" className="h-12">Search</Button>
+                        <Button size="lg" className="h-12">Search Tasks</Button>
                     </div>
                 </div>
             </section>
@@ -74,12 +76,12 @@ function QuickJobsView() {
             {/* Categories Section */}
             <section className="py-16 lg:py-24 bg-secondary/50">
                 <div className="container">
-                    <h2 className="text-3xl font-bold font-headline text-center mb-10">Popular services</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+                    <h2 className="text-3xl font-bold font-headline text-center mb-10">Popular quick jobs</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-6">
                         {quickJobCategories.map(category => (
-                            <Card key={category.name} className="group text-center hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer hover:-translate-y-1">
+                            <Card key={category.name} className="group text-center hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer hover:-translate-y-1 shadow-md hover:shadow-lg">
                                 <CardHeader className="p-6">
-                                    <category.icon className="h-10 w-10 mx-auto mb-3 text-primary group-hover:text-primary-foreground transition-colors" />
+                                    <category.icon className="h-10 w-10 mx-auto mb-4 text-primary group-hover:text-primary-foreground transition-colors" />
                                     <CardTitle className="font-headline text-lg">{category.name}</CardTitle>
                                 </CardHeader>
                             </Card>
@@ -91,30 +93,48 @@ function QuickJobsView() {
             {/* How It Works Section */}
             <section className="py-16 lg:py-24">
                 <div className="container">
-                     <h2 className="text-3xl font-bold font-headline text-center mb-12">How it works</h2>
+                     <h2 className="text-3xl font-bold font-headline text-center mb-12">Get it done in 3 simple steps</h2>
                      <div className="grid md:grid-cols-3 gap-12 text-center">
                         <div className="flex flex-col items-center">
                              <div className="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 border-2 border-primary/20">
                                 <User className="h-10 w-10 text-primary" />
                              </div>
-                             <h3 className="text-xl font-bold font-headline mb-2">1. Describe Your Task</h3>
-                             <p className="text-muted-foreground">Post your task with details like location, time, and budget.</p>
+                             <h3 className="text-xl font-bold font-headline mb-2">1. Post Your Task</h3>
+                             <p className="text-muted-foreground">Describe what you need done, and set your location and budget.</p>
                         </div>
                          <div className="flex flex-col items-center">
                              <div className="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 border-2 border-primary/20">
                                 <Calendar className="h-10 w-10 text-primary" />
                              </div>
-                             <h3 className="text-xl font-bold font-headline mb-2">2. Get Matched</h3>
-                             <p className="text-muted-foreground">We instantly notify nearby, qualified freelancers who can help.</p>
+                             <h3 className="text-xl font-bold font-headline mb-2">2. Match with a Tasker</h3>
+                             <p className="text-muted-foreground">Our algorithm instantly notifies qualified and available Taskers near you.</p>
                         </div>
                          <div className="flex flex-col items-center">
                              <div className="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 border-2 border-primary/20">
                                 <CheckCircle className="h-10 w-10 text-primary" />
                              </div>
-                             <h3 className="text-xl font-bold font-headline mb-2">3. Get it Done</h3>
-                             <p className="text-muted-foreground">Chat, hire your chosen freelancer, and get your task completed.</p>
+                             <h3 className="text-xl font-bold font-headline mb-2">3. Task Completed</h3>
+                             <p className="text-muted-foreground">Choose the best Tasker for the job, get it done, and pay securely.</p>
                         </div>
                      </div>
+                </div>
+            </section>
+
+             {/* CTA Section */}
+            <section className="py-16 lg:py-24 bg-primary text-primary-foreground">
+                <div className="container text-center">
+                    <h2 className="text-3xl md:text-4xl font-bold font-headline mb-4">Ready to get started?</h2>
+                    <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
+                        Post a task and get help in minutes, or sign up to earn money on your own schedule.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Button size="lg" variant="secondary" asChild>
+                            <Link href="/signup?role=client">Post a Task</Link>
+                        </Button>
+                        <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-primary" asChild>
+                            <Link href="/signup?role=freelancer">Become a Tasker</Link>
+                        </Button>
+                    </div>
                 </div>
             </section>
         </div>
