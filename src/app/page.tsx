@@ -54,12 +54,12 @@ const quickJobCategories = [
 ];
 
 const exampleTasks = [
-    "Deep clean my house for Diwali",
+    "Find a photographer for a pre-wedding shoot",
+    "Need a mehendi artist for a family function",
+    "Help setting up decorations for a birthday party",
     "Get my AC serviced before summer",
-    "Find a plumber for a leaking tap",
-    "Help moving furniture to a new flat",
-    "Get groceries from the local market",
-    "Need a cook for a dinner party",
+    "Urgent laptop repair needed",
+    "I need someone to run errands for me",
 ];
 
 function AnimatedHeadline() {
