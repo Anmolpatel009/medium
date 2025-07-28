@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Hero from '@/components/sections/hero';
 import ViewSwitcher from '@/components/view-switcher';
-import { Search, MapPin, Zap } from 'lucide-react';
+import { Construction, Home, Wrench, Package, PawPrint, Search, User, Calendar, CheckCircle, CookingPot, ShoppingBasket, Shirt, Paintbrush, Utensils, Zap } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
@@ -56,23 +56,18 @@ const popularJobs = [
 
 const FlipClock = () => {
     const [countdown, setCountdown] = useState(40);
-    const [prevCountdown, setPrevCountdown] = useState(40);
 
     useEffect(() => {
-        if (countdown > 0) {
-            const timerId = setInterval(() => {
-                setPrevCountdown(countdown);
-                setCountdown(countdown - 1);
-            }, 1000);
-            return () => clearInterval(timerId);
-        }
-    }, [countdown]);
+        const timerId = setInterval(() => {
+            setCountdown(prev => (prev > 0 ? prev - 1 : 0));
+        }, 1000);
+        return () => clearInterval(timerId);
+    }, []);
     
     const tens = Math.floor(countdown / 10);
     const ones = countdown % 10;
-    
-    const prevTens = Math.floor(prevCountdown / 10);
-    const prevOnes = prevCountdown % 10;
+    const prevTens = Math.floor((countdown + 1) / 10);
+    const prevOnes = (countdown + 1) % 10;
 
     const Nums = ({ placeValue, prevPlaceValue }: { placeValue: number, prevPlaceValue: number }) => (
         <div className="nums">
@@ -82,7 +77,7 @@ const FlipClock = () => {
                     className="num" 
                     data-num={i} 
                     data-active={placeValue === i} 
-                    data-num-next={prevPlaceValue === i ? (i - 1 + 10) % 10 : i}
+                    data-num-next={(i - 1 + 10) % 10}
                 ></div>
             ))}
         </div>
@@ -93,30 +88,24 @@ const FlipClock = () => {
 
 
 function QuickJobsView() {
-    const [time, setTime] = useState('');
-
-    useEffect(() => {
-        const updateClock = () => {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            setTime(`${hours}:${minutes}`);
-        };
-        updateClock();
-        const timerId = setInterval(updateClock, 1000);
-        return () => clearInterval(timerId);
-    }, []);
-
     return (
         <div className="bg-gradient-to-br from-indigo-50 via-white to-rose-50 dark:from-gray-900 dark:via-black dark:to-indigo-950 text-gray-800 dark:text-gray-200">
             {/* Hero Section */}
             <section className="relative overflow-hidden py-12 lg:py-20">
-                <div className="container flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
-                     <FlipClock />
+                <div className="container grid md:grid-cols-3 items-center justify-center gap-8 text-center">
+                    <div className="text-center md:text-right">
+                        <h2 className="text-2xl md:text-3xl font-bold font-serif-display leading-tight text-gray-800 dark:text-gray-100">
+                           seconds to meet
+                        </h2>
+                        <p className="text-lg text-gray-600 dark:text-gray-300">the person you're looking for</p>
+                    </div>
+                    <div className="flex justify-center">
+                        <FlipClock />
+                    </div>
                      <div className="text-center md:text-left">
-                        <h1 className="text-3xl md:text-5xl font-bold font-serif-display leading-tight text-gray-800 dark:text-gray-100">
+                        <h2 className="text-2xl md:text-3xl font-bold font-serif-display leading-tight text-gray-800 dark:text-gray-100">
                            seconds remaining
-                        </h1>
+                        </h2>
                         <p className="text-lg text-gray-600 dark:text-gray-300">to get hired</p>
                     </div>
                 </div>
