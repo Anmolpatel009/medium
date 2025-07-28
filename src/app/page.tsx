@@ -61,15 +61,22 @@ function FlipUnit({ digit }: { digit: number }) {
 
   useEffect(() => {
     if (currentDigit !== digit) {
-      setIsFlipping(true);
-      setNextDigit(digit);
+      if (!isFlipping) {
+        setNextDigit(digit);
+        setIsFlipping(true);
+      }
+    }
+  }, [digit, currentDigit, isFlipping]);
+
+  useEffect(() => {
+    if (isFlipping) {
       const timeout = setTimeout(() => {
-        setCurrentDigit(digit);
+        setCurrentDigit(nextDigit);
         setIsFlipping(false);
       }, 600); // Corresponds to animation duration
       return () => clearTimeout(timeout);
     }
-  }, [digit, currentDigit]);
+  }, [isFlipping, nextDigit]);
 
   return (
     <div className="flip-unit">
@@ -138,6 +145,13 @@ function QuickJobsView() {
             {/* Ticker Section */}
             <div className="w-full overflow-hidden bg-secondary border-y border-border">
                 <div className="scrolling-ticker-container">
+                    <div className="scrolling-ticker">
+                    {[...popularJobs, ...popularJobs].map((job, index) => (
+                        <div key={index} className="flex items-center gap-2 px-8 py-3 text-sm font-medium text-secondary-foreground whitespace-nowrap">
+                            <span>{job}</span>
+                        </div>
+                    ))}
+                    </div>
                     <div className="scrolling-ticker">
                     {[...popularJobs, ...popularJobs].map((job, index) => (
                         <div key={index} className="flex items-center gap-2 px-8 py-3 text-sm font-medium text-secondary-foreground whitespace-nowrap">
