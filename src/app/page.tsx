@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Hero from '@/components/sections/hero';
 import ViewSwitcher from '@/components/view-switcher';
-import { Construction, Home, Wrench, Package, PawPrint, Search, User, Calendar, CheckCircle, CookingPot, ShoppingBasket, Shirt } from 'lucide-react';
+import { Construction, Home, Wrench, Package, PawPrint, Search, User, Calendar, CheckCircle, CookingPot, ShoppingBasket, Shirt, Paintbrush, Utensils } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -44,22 +44,22 @@ function ProfessionalView() {
 
 const quickJobCategories = [
     { name: 'Handyman', icon: Wrench },
-    { name: 'Cleaning', icon: Home },
+    { name: 'Home Cleaning', icon: Home },
     { name: 'Moving Help', icon: Package },
-    { name: 'Pet Walking', icon: PawPrint },
+    { name: 'Tiffin/Home Chef', icon: Utensils },
     { name: 'Shopping', icon: ShoppingBasket },
-    { name: 'Laundry', icon: Shirt },
+    { name: 'Home Painting', icon: Paintbrush },
     { name: 'Cooking', icon: CookingPot },
     { name: 'Furniture Assembly', icon: Construction },
 ];
 
 const exampleTasks = [
-    "Assemble my new desk",
-    "Clean my apartment",
-    "Get my groceries delivered",
-    "Walk my dog this afternoon",
-    "Mount my TV on the wall",
-    "Get help moving a couch",
+    "Deep clean my house for Diwali",
+    "Get my AC serviced before summer",
+    "Find a plumber for a leaking tap",
+    "Help moving furniture to a new flat",
+    "Get groceries from the local market",
+    "Need a cook for a dinner party",
 ];
 
 function AnimatedHeadline() {
