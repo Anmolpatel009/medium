@@ -54,6 +54,39 @@ const popularJobs = [
     "AC Repair", "Plumbing", "Home Cleaning", "Tiffin Service", "Makeup Artist", "Electrician", "Local Errands", "Event Photography", "Appliance Repair", "Furniture Assembly", "Home Painting", "Packers & Movers"
 ];
 
+const FlipClock = () => {
+    const [countdown, setCountdown] = useState(40);
+
+    useEffect(() => {
+        if (countdown > 0) {
+            const timerId = setInterval(() => {
+                setCountdown(countdown - 1);
+            }, 1000);
+            return () => clearInterval(timerId);
+        }
+    }, [countdown]);
+    
+    const tens = Math.floor(countdown / 10);
+    const ones = countdown % 10;
+
+    const Nums = ({ placeValue }: { placeValue: number }) => (
+        <div className="nums">
+            {[...Array(10)].map((_, i) => (
+                <div 
+                    key={i} 
+                    className="num" 
+                    data-num={i} 
+                    data-active={placeValue === i} 
+                    data-num-next={(i + 1) % 10}
+                ></div>
+            ))}
+        </div>
+    );
+    
+    return <div className="flip-clock-container"><Nums placeValue={tens} /><Nums placeValue={ones} /></div>;
+}
+
+
 function QuickJobsView() {
     const [time, setTime] = useState('');
 
@@ -72,44 +105,14 @@ function QuickJobsView() {
     return (
         <div className="bg-gradient-to-br from-indigo-50 via-white to-rose-50 dark:from-gray-900 dark:via-black dark:to-indigo-950 text-gray-800 dark:text-gray-200">
             {/* Hero Section */}
-            <section className="relative overflow-hidden py-16 lg:py-24">
-                <div className="container text-center">
-                    <h1 className="text-4xl md:text-6xl font-bold font-serif-display leading-tight mb-4">
-                        Quick Gigs, <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 dark:from-rose-400 dark:to-cyan-400">Fast Cash.</span>
-                    </h1>
-                    <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-                        Your skills are in demand. Find local tasks, help your community, and earn on your terms. Get paid for what you do, right when you do it.
-                    </p>
-                    <div className="flex max-w-xl mx-auto bg-white dark:bg-gray-800/50 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 p-2 focus-within:ring-2 ring-primary">
-                        <div className="relative flex-grow">
-                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                             <Input placeholder="What service do you need today?" className="h-12 pl-12 bg-transparent border-none focus-visible:ring-0 text-base" />
-                        </div>
-                        <Button size="lg" className="h-12 rounded-full">Find Services</Button>
-                    </div>
-
-                    <div className="mt-16 flex justify-center gap-4 md:gap-8 animate-fade-in-up">
-                        <div className="hero-card">
-                            <div className="hero-card__date">
-                                <span className="day text-gray-400 text-sm">MONDAY</span>
-                                <span className="time">{time}</span>
-                            </div>
-                            <div className="popup">
-                                <span className="title">NOW</span>
-                                <span className="location flex items-center gap-1"><MapPin size={12}/> Bangalore</span>
-                            </div>
-                        </div>
-                        <div className="flex flex-col gap-3 justify-center">
-                            {exampleTasks.map((task, i) => (
-                                <div key={i} className={`notification ${task.type === 'payment' ? 'payment' : ''}`}>
-                                    <div className="notification-header">
-                                        {task.logo && <task.logo className="notification-logo" />}
-                                        <span className="notification-title">{task.title}</span>
-                                    </div>
-                                    <p className="notification-body">{task.body}</p>
-                                </div>
-                            ))}
-                        </div>
+            <section className="relative overflow-hidden py-12 lg:py-20">
+                <div className="container flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+                     <FlipClock />
+                     <div className="text-center md:text-left">
+                        <h1 className="text-3xl md:text-5xl font-bold font-serif-display leading-tight text-gray-800 dark:text-gray-100">
+                           seconds remaining
+                        </h1>
+                        <p className="text-lg text-gray-600 dark:text-gray-300">to get hired</p>
                     </div>
                 </div>
             </section>

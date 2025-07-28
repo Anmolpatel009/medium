@@ -290,3 +290,102 @@
 .view-switcher-blob.active-quick {
     transform: translateX(100%);
 }
+
+/* Flip Clock Styles */
+.flip-clock-container {
+  text-align: center;
+  display: flex;
+  gap: 10px;
+}
+
+.nums {
+  box-shadow:
+    8px 8px 15px rgba(42, 42, 42, 0.2),
+    -8px -8px 15px rgba(255, 255, 255, 0.5);
+  display: inline-block;
+  height: 10rem;
+  perspective: 1000px;
+  position: relative;
+  width: 7rem;
+  border-radius: 20px;
+}
+
+.dark .nums {
+   box-shadow:
+    8px 8px 15px rgba(0, 0, 0, 0.5),
+    -8px -8px 15px rgba(255, 255, 255, 0.1);
+}
+
+.nums:before {
+  border-bottom: 1px solid hsl(var(--border));
+  content: "";
+  height: 1px;
+  left: 0;
+  position: absolute;
+  transform: translate3d(0, -1px, 0);
+  top: 50%;
+  width: 100%;
+  z-index: 1000;
+}
+
+.num {
+  transform-style: preserve-3d;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  transform: rotateX(0deg);
+}
+
+.num[data-active="true"] {
+  animation: flip-card 1s ease-in;
+  z-index: 50;
+}
+
+.num:before,
+.num:after {
+  backface-visibility: hidden;
+  color: hsl(var(--foreground));
+  display: block;
+  font-size: 8rem;
+  font-weight: bold;
+  height: 50%;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+.dark .num:before, .dark .num:after {
+  color: #f1f1f1;
+}
+
+.num:before {
+  background: hsl(var(--muted));
+  border-radius: 20px 20px 0 0;
+  content: attr(data-num);
+  line-height: 1.4;
+  top: 0;
+  z-index: 1;
+}
+
+.num:after {
+  background: hsl(var(--muted));
+  border-bottom: 1px solid hsl(var(--border));
+  border-radius: 0 0 20px 20px;
+  content: attr(data-num-next);
+  height: calc(50% - 1px);
+  line-height: 0;
+  top: 0;
+  transform: rotateX(180deg);
+}
+
+@keyframes flip-card {
+  0% {
+    transform: rotateX(0deg);
+  }
+  100% {
+    transform: rotateX(-180deg);
+  }
+}
