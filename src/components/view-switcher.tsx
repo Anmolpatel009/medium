@@ -13,7 +13,7 @@ export default function ViewSwitcher({ activeView, setActiveView }: ViewSwitcher
     <div className="bg-secondary/30 py-3">
         <div className="container">
             <div className="flex flex-col sm:flex-row items-center bg-background p-1 rounded-xl border w-full">
-                 <button 
+                 <div 
                     onClick={() => setActiveView('professional')}
                     className={cn(
                         "view-switcher-button w-full sm:w-1/2 justify-center",
@@ -21,8 +21,8 @@ export default function ViewSwitcher({ activeView, setActiveView }: ViewSwitcher
                     )}
                  >
                     <span>Professional</span>
-                </button>
-                 <button 
+                </div>
+                 <div 
                     onClick={() => setActiveView('quick-jobs')}
                     className={cn(
                         "view-switcher-button w-full sm:w-1/2 justify-center",
@@ -30,7 +30,7 @@ export default function ViewSwitcher({ activeView, setActiveView }: ViewSwitcher
                     )}
                 >
                     <span>Quick</span>
-                </button>
+                </div>
             </div>
         </div>
     </div>
