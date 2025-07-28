@@ -104,6 +104,7 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, loading, logout } = useAuth();
   const pathname = usePathname();
+  const { setTheme, theme } = useTheme();
 
   const isDashboard = pathname.startsWith('/dashboard');
 
@@ -272,7 +273,6 @@ export default function Header() {
             <div className="flex items-center">
               <button
                 onClick={() => {
-                  const { setTheme, theme } = useTheme();
                   setTheme(theme === 'light' ? 'dark' : 'light');
                 }}
                 className="p-2 rounded-full hover:bg-accent"
