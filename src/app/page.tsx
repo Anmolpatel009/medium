@@ -54,36 +54,60 @@ const popularJobs = [
     "AC Repair", "Plumbing", "Home Cleaning", "Tiffin Service", "Makeup Artist", "Electrician", "Local Errands", "Event Photography", "Appliance Repair", "Furniture Assembly", "Home Painting", "Packers & Movers"
 ];
 
-const FlipClock = () => {
-    const [countdown, setCountdown] = useState(40);
+function FlipUnit({ digit }: { digit: number }) {
+  const [currentDigit, setCurrentDigit] = useState(digit);
+  const [nextDigit, setNextDigit] = useState(digit);
+  const [isFlipping, setIsFlipping] = useState(false);
 
-    useEffect(() => {
-        const timerId = setInterval(() => {
-            setCountdown(prev => (prev > 0 ? prev - 1 : 0));
-        }, 1000);
-        return () => clearInterval(timerId);
-    }, []);
-    
-    const tens = Math.floor(countdown / 10);
-    const ones = countdown % 10;
-    const prevTens = Math.floor((countdown + 1) / 10);
-    const prevOnes = (countdown + 1) % 10;
+  useEffect(() => {
+    if (currentDigit !== digit) {
+      setIsFlipping(true);
+      setNextDigit(digit);
+      const timeout = setTimeout(() => {
+        setCurrentDigit(digit);
+        setIsFlipping(false);
+      }, 600); // Corresponds to animation duration
+      return () => clearTimeout(timeout);
+    }
+  }, [digit, currentDigit]);
 
-    const Nums = ({ placeValue, prevPlaceValue }: { placeValue: number, prevPlaceValue: number }) => (
-        <div className="nums">
-            {[...Array(10)].map((_, i) => (
-                <div 
-                    key={i} 
-                    className="num" 
-                    data-num={i} 
-                    data-active={placeValue === i} 
-                    data-num-next={(i - 1 + 10) % 10}
-                ></div>
-            ))}
+  return (
+    <div className="flip-unit">
+      <div className={`flip-card ${isFlipping ? 'active' : ''}`}>
+        {/* Front Face */}
+        <div className="card-face card-face-front">
+          <div className="digit-plate top-half">{currentDigit}</div>
+          <div className="digit-plate bottom-half">{currentDigit}</div>
         </div>
-    );
+        {/* Back Face */}
+        <div className="card-face card-face-back">
+          <div className="digit-plate top-half">{nextDigit}</div>
+          <div className="digit-plate bottom-half">{nextDigit}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const FlipClock = () => {
+  const [countdown, setCountdown] = useState(40);
+
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      setCountdown(prev => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timerId);
+  }, []);
+  
+  const tens = Math.floor(countdown / 10);
+  const ones = countdown % 10;
     
-    return <div className="flip-clock-container"><Nums placeValue={tens} prevPlaceValue={prevTens} /><Nums placeValue={ones} prevPlaceValue={prevOnes}/></div>;
+  return (
+    <div className="flip-clock-container">
+      <FlipUnit digit={tens} />
+      <FlipUnit digit={ones} />
+    </div>
+  );
 }
 
 
