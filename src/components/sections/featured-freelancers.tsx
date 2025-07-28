@@ -6,7 +6,7 @@ import { collection, onSnapshot, query, where, limit } from 'firebase/firestore'
 import { db } from '@/lib/firebase';
 import type { User } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import GlowingFreelancerCard from './glowing-freelancer-card';
+import FlipFreelancerCard from './glowing-freelancer-card';
 
 export default function FeaturedFreelancers() {
   const [freelancers, setFreelancers] = useState<User[]>([]);
@@ -46,7 +46,7 @@ export default function FeaturedFreelancers() {
                     ))
                  }
                  {!loading && freelancers.map((freelancer) => (
-                    <GlowingFreelancerCard key={freelancer.id} freelancer={freelancer} />
+                    <FlipFreelancerCard key={freelancer.id} freelancer={freelancer} />
                 ))}
             </div>
 

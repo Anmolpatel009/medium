@@ -4,13 +4,14 @@
 import { useEffect, useState } from 'react';
 import type { User } from '@/types';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Milestone, Sparkles } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Milestone, Sparkles, Mail, Phone } from 'lucide-react';
 import { getAuth, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { doc, getDoc, GeoPoint } from 'firebase/firestore';
 import { app, db } from '@/lib/firebase';
+import Image from 'next/image';
 
-interface GlowingFreelancerCardProps {
+interface FlipFreelancerCardProps {
   freelancer: User;
 }
 
@@ -36,7 +37,7 @@ function getDistanceInKm(point1: GeoPoint, point2: GeoPoint) {
     return R * c; // Distance in km
 }
 
-export default function GlowingFreelancerCard({ freelancer }: GlowingFreelancerCardProps) {
+export default function FlipFreelancerCard({ freelancer }: FlipFreelancerCardProps) {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [distance, setDistance] = useState<number | null>(null);
     const auth = getAuth(app);
@@ -67,31 +68,36 @@ export default function GlowingFreelancerCard({ freelancer }: GlowingFreelancerC
     const skills = profile.skills || [];
 
     return (
-        <div className="glowing-card">
-            <div className="content space-y-2">
-                <Avatar className="h-16 w-16 text-xl border-2 border-purple-500">
-                    <AvatarFallback>{getInitials(freelancer.name)}</AvatarFallback>
-                </Avatar>
-                <div className="text-center">
-                    <p className="font-bold text-lg leading-tight truncate">{freelancer.name}</p>
+        <div className="flip-card-container">
+            <div className="flip-card-inner">
+                <div className="flip-card-front p-4 flex flex-col items-center justify-center space-y-3">
+                    <Avatar className="h-24 w-24 text-3xl border-4 border-white/50">
+                        <AvatarImage src={`https://i.pravatar.cc/150?u=${freelancer.id}`} alt={freelancer.name} />
+                        <AvatarFallback>{getInitials(freelancer.name)}</AvatarFallback>
+                    </Avatar>
+                    <h3 className="title text-xl font-bold">{freelancer.name}</h3>
+                    <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4" />
+                        <Phone className="h-4 w-4" />
+                    </div>
+                     <p className="text-sm font-semibold">Hover to see skills</p>
+                </div>
+                <div className="flip-card-back p-4 flex flex-col items-center justify-center space-y-3">
+                    <h4 className="title text-xl font-bold">Skills</h4>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                        {skills.slice(0, 4).map(skill => (
+                            <Badge key={skill} variant="secondary" className="bg-white/30 text-white">
+                                {skill}
+                            </Badge>
+                        ))}
+                    </div>
                     {distance !== null && (
-                        <p className="text-xs text-cyan-400 flex items-center justify-center gap-1">
-                            <Milestone className="h-3 w-3" />
-                            {distance.toFixed(1)} km away
-                        </p>
+                        <div className="mt-auto pt-2 text-center">
+                            <p className="font-bold text-lg">{distance.toFixed(1)}</p>
+                            <p className="text-xs">km away</p>
+                        </div>
                     )}
                 </div>
-                <div className="flex flex-wrap gap-1 justify-center">
-                    {skills.slice(0, 3).map(skill => (
-                        <Badge key={skill} variant="secondary" className="bg-gray-700 text-gray-200 border-gray-600 text-xs">
-                            {skill}
-                        </Badge>
-                    ))}
-                </div>
-                 <p className="text-xs text-amber-400 flex items-center gap-1 pt-1">
-                    <Sparkles className="h-3 w-3" />
-                    Top Rated
-                </p>
             </div>
         </div>
     );
