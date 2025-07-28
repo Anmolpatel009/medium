@@ -56,10 +56,12 @@ const popularJobs = [
 
 const FlipClock = () => {
     const [countdown, setCountdown] = useState(40);
+    const [prevCountdown, setPrevCountdown] = useState(40);
 
     useEffect(() => {
         if (countdown > 0) {
             const timerId = setInterval(() => {
+                setPrevCountdown(countdown);
                 setCountdown(countdown - 1);
             }, 1000);
             return () => clearInterval(timerId);
@@ -68,8 +70,11 @@ const FlipClock = () => {
     
     const tens = Math.floor(countdown / 10);
     const ones = countdown % 10;
+    
+    const prevTens = Math.floor(prevCountdown / 10);
+    const prevOnes = prevCountdown % 10;
 
-    const Nums = ({ placeValue }: { placeValue: number }) => (
+    const Nums = ({ placeValue, prevPlaceValue }: { placeValue: number, prevPlaceValue: number }) => (
         <div className="nums">
             {[...Array(10)].map((_, i) => (
                 <div 
@@ -77,13 +82,13 @@ const FlipClock = () => {
                     className="num" 
                     data-num={i} 
                     data-active={placeValue === i} 
-                    data-num-next={(i + 1) % 10}
+                    data-num-next={prevPlaceValue === i ? (i - 1 + 10) % 10 : i}
                 ></div>
             ))}
         </div>
     );
     
-    return <div className="flip-clock-container"><Nums placeValue={tens} /><Nums placeValue={ones} /></div>;
+    return <div className="flip-clock-container"><Nums placeValue={tens} prevPlaceValue={prevTens} /><Nums placeValue={ones} prevPlaceValue={prevOnes}/></div>;
 }
 
 
