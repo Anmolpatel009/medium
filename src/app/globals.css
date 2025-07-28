@@ -310,14 +310,8 @@
     display: flex;
     width: 100%;
     margin: 0 auto;
-    filter: url('data:image/svg+xml,\
-        <svg xmlns="http://www.w3.org/2000/svg">\
-            <filter id="goo">\
-                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />\
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />\
-                <feBlend in="SourceGraphic" in2="goo" />\
-            </filter>\
-        </svg>#goo');
+    background-color: hsl(var(--muted));
+    overflow: hidden;
 }
 
 .view-switcher-button {
@@ -328,11 +322,14 @@
     font-size: 1.1em;
     font-weight: 500;
     color: hsl(var(--foreground));
-    transition: color 0.3s ease;
+    transition: color 0.4s ease;
     z-index: 2;
 }
-.dark .view-switcher-button.active {
+.view-switcher-button.active {
     color: hsl(var(--background));
+}
+.dark .view-switcher-button.active {
+    color: #111;
 }
 
 .view-switcher-blob {
