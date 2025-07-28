@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -10,9 +11,10 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Hero from '@/components/sections/hero';
 import ViewSwitcher from '@/components/view-switcher';
-import { Construction, Home, Wrench, Package, PawPrint, Search, User, Calendar, CheckCircle, CookingPot, ShoppingBasket, Shirt, Paintbrush, Utensils } from 'lucide-react';
+import { Search, MapPin, Zap } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Image from 'next/image';
 
 function ProfessionalView() {
   return (
@@ -42,130 +44,125 @@ function ProfessionalView() {
   );
 }
 
-const quickJobCategories = [
-    { name: 'Handyman', icon: Wrench },
-    { name: 'Home Cleaning', icon: Home },
-    { name: 'Moving Help', icon: Package },
-    { name: 'Tiffin/Home Chef', icon: Utensils },
-    { name: 'Shopping', icon: ShoppingBasket },
-    { name: 'Home Painting', icon: Paintbrush },
-    { name: 'Cooking', icon: CookingPot },
-    { name: 'Furniture Assembly', icon: Construction },
-];
-
 const exampleTasks = [
-    "Find a photographer for a pre-wedding shoot",
-    "Need a mehendi artist for a family function",
-    "Help setting up decorations for a birthday party",
-    "Get my AC serviced before summer",
-    "Urgent laptop repair needed",
-    "I need someone to run errands for me",
+    { title: "New Task Posted!", body: "AC Service & Repair needed urgently in Koramangala.", logo: Zap },
+    { title: "Payment Received", body: "₹1,500 for Interior Painting.", logo: null, type: 'payment' },
+    { title: "New Task Posted!", body: "Help with shifting house items in HSR Layout.", logo: Zap },
 ];
 
-function AnimatedHeadline() {
-    const [index, setIndex] = useState(0);
-    const [fade, setFade] = useState(true);
+const popularJobs = [
+    "AC Repair", "Plumbing", "Home Cleaning", "Tiffin Service", "Makeup Artist", "Electrician", "Local Errands", "Event Photography", "Appliance Repair", "Furniture Assembly", "Home Painting", "Packers & Movers"
+];
+
+function QuickJobsView() {
+    const [time, setTime] = useState('');
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setFade(false); // Start fade out
-            setTimeout(() => {
-                setIndex((prevIndex) => (prevIndex + 1) % exampleTasks.length);
-                setFade(true); // Start fade in
-            }, 500); // Time for fade out animation
-        }, 3000); // Change task every 3 seconds
-
-        return () => clearInterval(interval);
+        const updateClock = () => {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            setTime(`${hours}:${minutes}`);
+        };
+        updateClock();
+        const timerId = setInterval(updateClock, 1000);
+        return () => clearInterval(timerId);
     }, []);
 
     return (
-        <div className="h-24 md:h-32 flex items-center justify-center">
-             <h1 className={`text-4xl md:text-5xl font-bold font-headline mb-4 text-center transition-opacity duration-500 ${fade ? 'animate-fade-in-down' : 'animate-fade-out-up'}`}>
-                {exampleTasks[index]}
-            </h1>
-        </div>
-    )
-}
-
-function QuickJobsView() {
-    return (
-        <div className="bg-background">
+        <div className="bg-gradient-to-br from-indigo-50 via-white to-rose-50 dark:from-gray-900 dark:via-black dark:to-indigo-950 text-gray-800 dark:text-gray-200">
             {/* Hero Section */}
-            <section className="relative overflow-hidden py-16 lg:py-24 text-center hero-bg-layered">
-                <div className="container">
-                    <AnimatedHeadline />
-                    <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                        Connect with trusted local Taskers for everything from cleaning to handyman jobs. Fast, reliable help is just around the corner.
+            <section className="relative overflow-hidden py-16 lg:py-24">
+                <div className="container text-center">
+                    <h1 className="text-4xl md:text-6xl font-bold font-serif-display leading-tight mb-4">
+                        Quick Gigs, <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-indigo-600 dark:from-rose-400 dark:to-cyan-400">Fast Cash.</span>
+                    </h1>
+                    <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+                        Your skills are in demand. Find local tasks, help your community, and earn on your terms. Get paid for what you do, right when you do it.
                     </p>
-                    <div className="flex max-w-xl mx-auto">
+                    <div className="flex max-w-xl mx-auto bg-white dark:bg-gray-800/50 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 p-2 focus-within:ring-2 ring-primary">
                         <div className="relative flex-grow">
-                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                             <Input placeholder="What do you need help with today?" className="h-12 pl-10 text-base" />
+                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                             <Input placeholder="What service do you need today?" className="h-12 pl-12 bg-transparent border-none focus-visible:ring-0 text-base" />
                         </div>
-                        <Button size="lg" className="h-12">Search Tasks</Button>
+                        <Button size="lg" className="h-12 rounded-full">Find Services</Button>
                     </div>
-                </div>
-            </section>
 
-            {/* Categories Section */}
-            <section className="py-16 lg:py-24 bg-secondary/50">
-                <div className="container">
-                    <h2 className="text-3xl font-bold font-headline text-center mb-10">Popular quick jobs</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-6">
-                        {quickJobCategories.map(category => (
-                            <Card key={category.name} className="group text-center hover:bg-primary hover:text-primary-foreground transition-all duration-300 cursor-pointer hover:-translate-y-1 shadow-md hover:shadow-lg">
-                                <CardHeader className="p-6">
-                                    <category.icon className="h-10 w-10 mx-auto mb-4 text-primary group-hover:text-primary-foreground transition-colors" />
-                                    <CardTitle className="font-headline text-lg">{category.name}</CardTitle>
-                                </CardHeader>
-                            </Card>
-                        ))}
+                    <div className="mt-16 flex justify-center gap-4 md:gap-8 animate-fade-in-up">
+                        <div className="hero-card">
+                            <div className="hero-card__date">
+                                <span className="day text-gray-400 text-sm">MONDAY</span>
+                                <span className="time">{time}</span>
+                            </div>
+                            <div className="popup">
+                                <span className="title">NOW</span>
+                                <span className="location flex items-center gap-1"><MapPin size={12}/> Bangalore</span>
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-3 justify-center">
+                            {exampleTasks.map((task, i) => (
+                                <div key={i} className={`notification ${task.type === 'payment' ? 'payment' : ''}`}>
+                                    <div className="notification-header">
+                                        {task.logo && <task.logo className="notification-logo" />}
+                                        <span className="notification-title">{task.title}</span>
+                                    </div>
+                                    <p className="notification-body">{task.body}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
             
+            {/* Ticker Section */}
+            <div className="w-full overflow-hidden bg-white/50 dark:bg-black/20 backdrop-blur-sm border-y border-gray-200 dark:border-gray-800">
+                <div className="scrolling-ticker-container flex">
+                    <div className="scrolling-ticker">
+                    {[...popularJobs, ...popularJobs].map((job, index) => (
+                        <div key={index} className="flex items-center gap-2 px-8 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                            <span>{job}</span>
+                        </div>
+                    ))}
+                    </div>
+                </div>
+            </div>
+
             {/* How It Works Section */}
             <section className="py-16 lg:py-24">
-                <div className="container">
-                     <h2 className="text-3xl font-bold font-headline text-center mb-12">Get it done in 3 simple steps</h2>
-                     <div className="grid md:grid-cols-3 gap-12 text-center">
-                        <div className="flex flex-col items-center">
-                             <div className="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 border-2 border-primary/20">
-                                <User className="h-10 w-10 text-primary" />
-                             </div>
-                             <h3 className="text-xl font-bold font-headline mb-2">1. Post Your Task</h3>
-                             <p className="text-muted-foreground">Describe what you need done, and set your location and budget.</p>
+                 <div className="container">
+                     <h2 className="text-3xl font-bold font-serif-display text-center mb-12">Your Hustle, Your Rules.</h2>
+                     <div className="grid md:grid-cols-3 gap-8 text-center max-w-5xl mx-auto">
+                        <div className="flex flex-col items-center p-6 bg-white/50 dark:bg-gray-800/20 rounded-2xl shadow-sm hover:shadow-lg transition-shadow">
+                            <Image data-ai-hint="describe task" src="https://placehold.co/400x300.png" alt="Describe your task" width={200} height={150} className="rounded-lg mb-4" />
+                            <h3 className="text-xl font-bold font-headline mb-2">1. Describe the Gig</h3>
+                            <p className="text-gray-600 dark:text-gray-300">Quickly post what you need done. Be it a small repair or a quick errand, just a few taps and you're set.</p>
                         </div>
-                         <div className="flex flex-col items-center">
-                             <div className="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 border-2 border-primary/20">
-                                <Calendar className="h-10 w-10 text-primary" />
-                             </div>
-                             <h3 className="text-xl font-bold font-headline mb-2">2. Match with a Tasker</h3>
-                             <p className="text-muted-foreground">Our algorithm instantly notifies qualified and available Taskers near you.</p>
+                         <div className="flex flex-col items-center p-6 bg-white/50 dark:bg-gray-800/20 rounded-2xl shadow-sm hover:shadow-lg transition-shadow">
+                            <Image data-ai-hint="local people" src="https://placehold.co/400x300.png" alt="Get local offers" width={200} height={150} className="rounded-lg mb-4" />
+                            <h3 className="text-xl font-bold font-headline mb-2">2. Get Local Offers</h3>
+                            <p className="text-gray-600 dark:text-gray-300">Instantly, your task is sent to trusted Taskers in your neighborhood. No long waits, just fast responses.</p>
                         </div>
-                         <div className="flex flex-col items-center">
-                             <div className="flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4 border-2 border-primary/20">
-                                <CheckCircle className="h-10 w-10 text-primary" />
-                             </div>
-                             <h3 className="text-xl font-bold font-headline mb-2">3. Task Completed</h3>
-                             <p className="text-muted-foreground">Choose the best Tasker for the job, get it done, and pay securely.</p>
+                         <div className="flex flex-col items-center p-6 bg-white/50 dark:bg-gray-800/20 rounded-2xl shadow-sm hover:shadow-lg transition-shadow">
+                            <Image data-ai-hint="task done" src="https://placehold.co/400x300.png" alt="Get it done" width={200} height={150} className="rounded-lg mb-4" />
+                            <h3 className="text-xl font-bold font-headline mb-2">3. Done and Dusted!</h3>
+                            <p className="text-gray-600 dark:text-gray-300">Choose your Tasker, get the job done, and pay securely through the app. Simple, safe, and satisfying.</p>
                         </div>
                      </div>
                 </div>
             </section>
 
              {/* CTA Section */}
-            <section className="py-16 lg:py-24 bg-primary text-primary-foreground">
+            <section className="py-16 lg:py-24 bg-white/80 dark:bg-gray-900/50">
                 <div className="container text-center">
-                    <h2 className="text-3xl md:text-4xl font-bold font-headline mb-4">Ready to get started?</h2>
-                    <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
-                        Post a task and get help in minutes, or sign up to earn money on your own schedule.
+                    <h2 className="text-3xl md:text-4xl font-bold font-serif-display mb-4">Ready to Start?</h2>
+                    <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+                        Whether you need a helping hand or want to earn extra income, your community is waiting.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button size="lg" variant="secondary" asChild>
+                        <Button size="lg" className="h-14 text-lg" asChild>
                             <Link href="/signup?role=client">Post a Task</Link>
                         </Button>
-                        <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-primary" asChild>
+                        <Button size="lg" variant="outline" className="h-14 text-lg bg-transparent border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground" asChild>
                             <Link href="/signup?role=freelancer">Become a Tasker</Link>
                         </Button>
                     </div>
@@ -174,6 +171,7 @@ function QuickJobsView() {
         </div>
     )
 }
+
 
 export default function ProfessionalHome() {
   const [activeView, setActiveView] = useState<'professional' | 'quick-jobs'>('professional');

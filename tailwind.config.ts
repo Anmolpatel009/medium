@@ -74,10 +74,10 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "fade-in-down": {
+        "fade-in-up": {
           "0%": {
               opacity: "0",
-              transform: "translateY(-20px)"
+              transform: "translateY(20px)"
           },
           "100%": {
               opacity: "1",
@@ -102,7 +102,7 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in-down": "fade-in-down 0.5s ease-out forwards",
+        "fade-in-up": "fade-in-up 0.6s ease-out forwards",
         "fade-out-up": "fade-out-up 0.5s ease-out forwards",
         "spin-slow": 'spin-slow 25s linear infinite',
       },
