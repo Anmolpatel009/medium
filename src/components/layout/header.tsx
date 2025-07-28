@@ -1,7 +1,8 @@
 
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, ChevronDown, LogOut, LayoutDashboard, Briefcase, Users, DollarSign, Calendar, Star, Construction, FileText, UserCheck, MessageSquare, Sun, Moon, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -69,7 +70,16 @@ const NavLink = ({ href, label, hasDropdown = false, children, onLinkClick }: { 
 };
 
 function ThemeToggle() {
+  const [mounted, setMounted] = useState(false)
   const { setTheme, theme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
 
   return (
     <div className="flex items-center gap-2">
