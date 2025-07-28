@@ -270,7 +270,7 @@
 }
 
 .light .hero-bg-layered::after {
-    background-color: hsla(190, 80%, 90%, 0.9);
+    background-color: hsla(340, 80%, 90%, 0.9);
 }
 
 
@@ -304,88 +304,52 @@
     }
 }
 
+
+.view-switcher-container {
+    position: relative;
+    display: flex;
+    width: 100%;
+    margin: 0 auto;
+    filter: url('data:image/svg+xml,\
+        <svg xmlns="http://www.w3.org/2000/svg">\
+            <filter id="goo">\
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />\
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />\
+                <feBlend in="SourceGraphic" in2="goo" />\
+            </filter>\
+        </svg>#goo');
+}
+
 .view-switcher-button {
-  position: relative;
-  text-decoration: none;
-  color: hsl(var(--foreground));
-  background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
-  padding: 14px 25px;
-  font-size: 1.1em; /* Adjusted size */
-  cursor: pointer;
-  border: none;
-  display: flex;
-  align-items: center;
+    flex-grow: 1;
+    text-align: center;
+    padding: 1rem;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+    transition: color 0.3s ease;
+    z-index: 2;
+}
+.dark .view-switcher-button.active {
+    color: hsl(var(--background));
 }
 
-.view-switcher-button.active {
-   color: hsl(var(--background));
+.view-switcher-blob {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 1;
+    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+    background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
 }
 
-.view-switcher-button span {
-  position: relative;
-  z-index: 1;
+.view-switcher-blob.active-professional {
+    transform: translateX(0%);
 }
-
-.view-switcher-button::before {
-  content: "";
-  position: absolute;
-  inset: 2px; /* Thicker border */
-  background: hsl(var(--background));
-  transition: 0.5s;
-}
-
-.view-switcher-button:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-.view-switcher-button:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
-.view-switcher-button:first-child::before {
-    border-top-left-radius: 9px;
-    border-bottom-left-radius: 9px;
-}
-.view-switcher-button:last-child::before {
-    border-top-right-radius: 9px;
-    border-bottom-right-radius: 9px;
-}
-
-
-.view-switcher-button.active::before {
-    opacity: 0;
-}
-
-.dark .view-switcher-button::before {
-    background: #272727;
-}
-
-.view-switcher-button:not(.active):hover::before {
-  opacity: 0.7;
-}
-
-.view-switcher-button::after {
-  content: "";
-  position: absolute;
-  inset: 0px;
-  background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
-  transition: 0.5s;
-  opacity: 0;
-  filter: blur(20px);
-}
-
-.view-switcher-button:first-child::after {
-    border-top-left-radius: 9px;
-    border-bottom-left-radius: 9px;
-}
-.view-switcher-button:last-child::after {
-    border-top-right-radius: 9px;
-    border-bottom-right-radius: 9px;
-}
-
-.view-switcher-button:hover::after {
-  opacity: 1;
+.view-switcher-blob.active-quick {
+    transform: translateX(100%);
 }
 
 .view-switcher-button-sm {
