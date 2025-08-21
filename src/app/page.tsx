@@ -5,7 +5,6 @@
 import { useState, useEffect } from 'react';
 import Header from '@/components/layout/header';
 import TaskList from '@/components/task-list';
-import AiRecommender from '@/components/sections/ai-recommender';
 import Footer from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -40,7 +39,6 @@ function ProfessionalView() {
           <TaskList />
         </div>
       </section>
-      <AiRecommender />
     </>
   );
 }
@@ -51,27 +49,25 @@ const popularJobs = [
 
 function FlipUnit({ digit }: { digit: number }) {
   const [currentDigit, setCurrentDigit] = useState(digit);
-  const [nextDigit, setNextDigit] = useState(digit);
   const [isFlipping, setIsFlipping] = useState(false);
 
   useEffect(() => {
     if (currentDigit !== digit) {
-      if (!isFlipping) {
-        setNextDigit(digit);
-        setIsFlipping(true);
-      }
+      setIsFlipping(true);
     }
-  }, [digit, currentDigit, isFlipping]);
+  }, [digit, currentDigit]);
 
   useEffect(() => {
     if (isFlipping) {
       const timeout = setTimeout(() => {
-        setCurrentDigit(nextDigit);
+        setCurrentDigit(digit);
         setIsFlipping(false);
       }, 600); // Corresponds to animation duration
       return () => clearTimeout(timeout);
     }
-  }, [isFlipping, nextDigit]);
+  }, [isFlipping, digit]);
+  
+  const nextDigit = (currentDigit + 1) % 10;
 
   return (
     <div className="flip-unit">
@@ -83,8 +79,8 @@ function FlipUnit({ digit }: { digit: number }) {
         </div>
         {/* Back Face */}
         <div className="card-face card-face-back">
-          <div className="digit-plate top-half">{nextDigit}</div>
-          <div className="digit-plate bottom-half">{nextDigit}</div>
+          <div className="digit-plate top-half">{digit}</div>
+          <div className="digit-plate bottom-half">{digit}</div>
         </div>
       </div>
     </div>

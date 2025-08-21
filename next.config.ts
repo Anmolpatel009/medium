@@ -37,19 +37,6 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  webpack: (
-    config,
-    { isServer }
-  ) => {
-    // Exclude the dev-only AI file from client-side bundles
-    if (!isServer) {
-        config.resolve.alias = {
-            ...config.resolve.alias,
-            '@/ai/dev': false,
-        }
-    }
-    return config
-  },
 };
 
 export default nextConfig;
