@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -35,6 +36,19 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       }
     ],
+  },
+  webpack: (
+    config,
+    { isServer }
+  ) => {
+    // Exclude the dev-only AI file from client-side bundles
+    if (!isServer) {
+        config.resolve.alias = {
+            ...config.resolve.alias,
+            '@/ai/dev': false,
+        }
+    }
+    return config
   },
 };
 
