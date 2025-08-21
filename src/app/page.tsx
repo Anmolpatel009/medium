@@ -77,7 +77,7 @@ function FlipUnit({ digit }: { digit: number }) {
     <div className="flip-unit">
       <div className={`flip-card ${isFlipping ? 'active' : ''}`}>
         {/* Front Face */}
-        <div className="card-face card-face-fro nt">
+        <div className="card-face card-face-front">
           <div className="digit-plate top-half">{currentDigit}</div>
           <div className="digit-plate bottom-half">{currentDigit}</div>
         </div>
