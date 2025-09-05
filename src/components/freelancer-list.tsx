@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { User } from '@/types';
 import FreelancerCard from '@/components/freelancer-card';
@@ -12,7 +12,13 @@ export default function FreelancerList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, 'users'), where('role', '==', 'freelancer'));
+    // This query now includes an orderBy clause. If an index is missing, 
+    // Firestore will provide a console error with a link to create it.
+    const q = query(
+        collection(db, 'users'), 
+        where('role', '==', 'freelancer'),
+        orderBy('createdAt', 'desc')
+    );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const freelancersData: User[] = [];
       querySnapshot.forEach((doc) => {
@@ -20,6 +26,10 @@ export default function FreelancerList() {
       });
       setFreelancers(freelancersData);
       setLoading(false);
+    }, (error) => {
+        console.error("Error fetching freelancers: ", error);
+        // The error message in the browser console will contain the link to create the necessary index.
+        setLoading(false);
     });
 
     return () => unsubscribe();
@@ -50,7 +60,7 @@ export default function FreelancerList() {
     return (
       <div className="text-center py-12 border-2 border-dashed rounded-lg">
         <h3 className="text-xl font-semibold text-muted-foreground">No freelancers found.</h3>
-        <p className="text-muted-foreground mt-2">Looks like no one has signed up as a freelancer yet.</p>
+        <p className="text-muted-foreground mt-2">Looks like no one has signed up as a freelancer yet, or the required Firestore index has not been created.</p>
       </div>
     );
   }
