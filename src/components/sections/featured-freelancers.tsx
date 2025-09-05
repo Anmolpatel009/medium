@@ -6,7 +6,7 @@ import { collection, onSnapshot, query, where, limit } from 'firebase/firestore'
 import { db } from '@/lib/firebase';
 import type { User } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import FlipFreelancerCard from './glowing-freelancer-card';
+import FreelancerCard from '@/components/freelancer-card';
 
 export default function FeaturedFreelancers() {
   const [freelancers, setFreelancers] = useState<User[]>([]);
@@ -40,13 +40,13 @@ export default function FeaturedFreelancers() {
             <div className="flex flex-wrap justify-center gap-8">
                  {loading && 
                     [...Array(6)].map((_, i) => (
-                        <div key={i} className="w-[190px] h-[254px] bg-muted rounded-lg p-4">
+                        <div key={i} className="w-full max-w-[220px] h-[280px] bg-muted rounded-lg p-4">
                             <Skeleton className="h-full w-full" />
                         </div>
                     ))
                  }
                  {!loading && freelancers.map((freelancer) => (
-                    <FlipFreelancerCard key={freelancer.id} freelancer={freelancer} />
+                    <FreelancerCard key={freelancer.id} freelancer={freelancer} context="featured" />
                 ))}
             </div>
 

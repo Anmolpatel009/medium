@@ -5,12 +5,12 @@ import type { User } from '@/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Mail, Phone, Briefcase, MapPin, Star, MessageSquare } from 'lucide-react';
 
 interface FreelancerCardProps {
   freelancer: User;
-  context?: 'directory' | 'task-interest';
+  context?: 'directory' | 'task-interest' | 'featured';
 }
 
 function getInitials(name?: string) {
@@ -29,18 +29,31 @@ export default function FreelancerCard({ freelancer, context = 'directory' }: Fr
     const skillsArray = Array.isArray(profile.skills) 
       ? profile.skills 
       : typeof profile.skills === 'string' ? profile.skills.split(',').map(s => s.trim()) : [];
-
-    const servicesArray = typeof profile.services === 'string' 
-      ? profile.services.split(',').map(s => s.trim()) 
-      : [];
       
-    const allSkills = [...servicesArray, ...skillsArray].filter((value, index, self) => self.indexOf(value) === index && value);
+    const allSkills = skillsArray.filter(value => value);
+
+    if (context === 'featured') {
+         return (
+            <Card className="flex flex-col transition-all hover:shadow-lg w-full max-w-[220px]">
+                <CardContent className="p-4 flex flex-col items-center text-center">
+                     <Avatar className="h-24 w-24 text-3xl mb-4 border-2 border-primary/20">
+                        <AvatarImage src={`https://i.pravatar.cc/150?u=${freelancer.id}`} alt={freelancer.name} />
+                        <AvatarFallback>{getInitials(freelancer.name)}</AvatarFallback>
+                    </Avatar>
+                    <CardTitle className="font-headline text-lg">{freelancer.name || 'Anonymous Freelancer'}</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-1">{allSkills[0] || 'Top-rated Freelancer'}</p>
+                    <Button size="sm" className="mt-4 w-full">View Profile</Button>
+                </CardContent>
+            </Card>
+         )
+    }
 
   return (
     <Card className="flex flex-col transition-all hover:shadow-lg">
       <CardHeader className="bg-muted/50">
         <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16 text-xl">
+                <AvatarImage src={`https://i.pravatar.cc/150?u=${freelancer.id}`} alt={freelancer.name} />
                 <AvatarFallback>{getInitials(freelancer.name)}</AvatarFallback>
             </Avatar>
             <div>

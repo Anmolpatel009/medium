@@ -47,52 +47,7 @@ const popularJobs = [
     "AC Repair", "Plumbing", "Home Cleaning", "Tiffin Service", "Makeup Artist", "Electrician", "Local Errands", "Event Photography", "Appliance Repair", "Furniture Assembly", "Home Painting", "Packers & Movers"
 ];
 
-function FlipUnit({ digit }: { digit: number }) {
-  const [currentDigit, setCurrentDigit] = useState(digit);
-  const [isFlipping, setIsFlipping] = useState(false);
-
-  useEffect(() => {
-    if (currentDigit !== digit) {
-      setIsFlipping(true);
-    }
-  }, [digit, currentDigit]);
-
-  useEffect(() => {
-    if (isFlipping) {
-      const timeout = setTimeout(() => {
-        setCurrentDigit(digit);
-        setIsFlipping(false);
-      }, 600); // Corresponds to animation duration
-      return () => clearTimeout(timeout);
-    }
-  }, [isFlipping, digit]);
-  
-  const nextDigit = (currentDigit + 1) % 10;
-
-  return (
-    <div className="flip-unit">
-      <div className={`flip-card ${isFlipping ? 'active' : ''}`}>
-        {/* Front Face */}
-        <div className="card-face card-face-front">
-          <div className="digit-plate top-half">{currentDigit}</div>
-          <div className="digit-plate bottom-half">{currentDigit}</div>
-        </div>
-        {/* Back Face */}
-        <div className="card-face card-face-back">
-          <div className="digit-plate top-half">{digit}</div>
-          <div className="digit-plate bottom-half">{digit}</div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
-
 function QuickJobsView() {
-    // Remove timer state and useEffect hook
-
-
     return (
         <div className="bg-gradient-to-br from-indigo-50 via-white to-rose-50 dark:from-gray-900 dark:via-black dark:to-indigo-950 text-gray-800 dark:text-gray-200">
             {/* Hero Section */}
@@ -106,27 +61,16 @@ function QuickJobsView() {
                         </Button>
                     </div>
                     <div className="flex justify-center">
-                        {/* Removed FlipClock - display timer value here */}
-                        {/* You can add a placeholder or remove this div entirely if not needed */}
                     </div>
                      <div className="text-center md:text-left">
                         <h2 className="text-2xl md:text-3xl font-bold font-serif-display leading-tight text-gray-800 dark:text-gray-100">
  seconds remaining
                         </h2>
                         <p className="text-lg text-gray-600 dark:text-gray-300 mb-4">to get hired</p>
-                         {/* Add "Join as a Service Seeker" button */}
                          <Button size="lg" className="h-14 text-lg" asChild>
                             <Link href="/signup?role=client">Join as a Service Seeker</Link>
                         </Button>
                     </div>
-                    {/* Removed the extra div for buttons */}
-                    {/* <div className="md:col-span-3 flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                         <Button size="lg" className="h-14 text-lg" asChild>
-                            <Link href="/signup?role=client">Post a Task</Link>
-                        </Button>
-                        <Button size="lg" variant="outline" className="h-14 text-lg bg-transparent border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground" asChild>
-                            <Link href="/signup?role=freelancer">Become a Tasker</Link>
-                        </Button> */}
                 </div>
             </section>
             
