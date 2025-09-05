@@ -20,7 +20,8 @@ export default function FreelancerList() {
     // Firestore will provide a console error with a link to create it.
     const q = query(
         collection(db, 'users'), 
-        where('role', '==', 'freelancer')
+        where('role', '==', 'freelancer'),
+        orderBy('createdAt', 'desc')
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const freelancersData: User[] = [];
