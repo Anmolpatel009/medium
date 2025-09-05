@@ -14,11 +14,13 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import FeaturedFreelancers from '@/components/sections/featured-freelancers';
+import HowItWorks from '@/components/sections/how-it-works';
 
 function ProfessionalView() {
   return (
     <>
       <Hero />
+      <HowItWorks />
       <FeaturedFreelancers />
       <section className="py-16 lg:py-24 bg-secondary">
         <div className="container">
