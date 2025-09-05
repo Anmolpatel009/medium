@@ -102,17 +102,17 @@ function QuickJobsView() {
                      <h2 className="text-3xl font-bold font-serif-display text-center mb-12">Your Hustle, Your Rules.</h2>
                      <div className="grid md:grid-cols-3 gap-8 text-center max-w-5xl mx-auto">
                         <div className="flex flex-col items-center p-6 bg-white/50 dark:bg-gray-800/20 rounded-2xl shadow-sm hover:shadow-lg transition-shadow">
-                            <Image data-ai-hint="describe task" src="https://placehold.co/400x300.png" alt="Describe your task" width={200} height={150} className="rounded-lg mb-4" />
+                            <Image data-ai-hint="describe task" src="https://picsum.photos/400/300" alt="Describe your task" width={200} height={150} className="rounded-lg mb-4" />
                             <h3 className="text-xl font-bold font-headline mb-2">1. Describe the Gig</h3>
                             <p className="text-gray-600 dark:text-gray-300">Quickly post what you need done. Be it a small repair or a quick errand, just a few taps and you're set.</p>
                         </div>
                          <div className="flex flex-col items-center p-6 bg-white/50 dark:bg-gray-800/20 rounded-2xl shadow-sm hover:shadow-lg transition-shadow">
-                            <Image data-ai-hint="local people" src="https://placehold.co/400x300.png" alt="Get local offers" width={200} height={150} className="rounded-lg mb-4" />
+                            <Image data-ai-hint="local people" src="https://picsum.photos/400/300" alt="Get local offers" width={200} height={150} className="rounded-lg mb-4" />
                             <h3 className="text-xl font-bold font-headline mb-2">2. Get Local Offers</h3>
                             <p className="text-gray-600 dark:text-gray-300">Instantly, your task is sent to trusted Taskers in your neighborhood. No long waits, just fast responses.</p>
                         </div>
                          <div className="flex flex-col items-center p-6 bg-white/50 dark:bg-gray-800/20 rounded-2xl shadow-sm hover:shadow-lg transition-shadow">
-                            <Image data-ai-hint="task done" src="https://placehold.co/400x300.png" alt="Get it done" width={200} height={150} className="rounded-lg mb-4" />
+                            <Image data-ai-hint="task done" src="https://picsum.photos/400/300" alt="Get it done" width={200} height={150} className="rounded-lg mb-4" />
                             <h3 className="text-xl font-bold font-headline mb-2">3. Done and Dusted!</h3>
                             <p className="text-gray-600 dark:text-gray-300">Choose your Tasker, get the job done, and pay securely through the app. Simple, safe, and satisfying.</p>
                         </div>

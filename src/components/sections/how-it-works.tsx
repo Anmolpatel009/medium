@@ -1,71 +1,63 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Briefcase, Zap, BrainCircuit } from 'lucide-react';
+import Image from 'next/image';
+import { Users, FileText, CheckCircle } from 'lucide-react';
+
+const steps = [
+  {
+    icon: FileText,
+    title: '1. Post Your Project',
+    description: "Describe your project, set your budget, and post it for our community of skilled professionals to see.",
+    image: 'https://picsum.photos/600/400',
+    dataAiHint: 'woman writing'
+  },
+  {
+    icon: Users,
+    title: '2. Receive Quality Bids',
+    description: "Get proposals from top-tier freelancers. Review their profiles, portfolios, and past work to find the perfect match.",
+    image: 'https://picsum.photos/600/400',
+    dataAiHint: 'team meeting'
+  },
+  {
+    icon: CheckCircle,
+    title: '3. Collaborate & Complete',
+    description: "Work with your chosen freelancer, manage milestones, and release payment only when you're 100% satisfied.",
+    image: 'https://picsum.photos/600/400',
+    dataAiHint: 'handshake deal'
+  },
+];
+
 
 export default function HowItWorks() {
   return (
     <section className="py-16 lg:py-24 bg-secondary/50">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold font-headline">Find Help in Seconds. For Any Task.</h2>
+          <h2 className="text-3xl md:text-4xl font-bold font-headline">How It Works</h2>
           <p className="text-lg text-muted-foreground mt-2 max-w-3xl mx-auto">
-            Our platform is built for two kinds of needs. Whether it's a complex project or an urgent errand, getting help is as easy as booking a ride.
+            Get your projects done with a simple, transparent, and secure process.
           </p>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <Card className="shadow-lg hover:shadow-xl transition-shadow">
-                <CardHeader>
-                    <div className="flex items-center gap-4">
-                       <div className="p-3 bg-primary/10 rounded-full">
-                         <Briefcase className="h-7 w-7 text-primary" />
-                       </div>
-                        <CardTitle className="font-headline text-2xl">Professional Gigs</CardTitle>
-                    </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <p className="text-muted-foreground">
-                        For when you need a specific skillset. Find experienced freelancers for tech, creative, and business projects.
-                    </p>
-                    <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                        <li>Website Development & IT</li>
-                        <li>Graphic Design & Branding</li>
-                        <li>Content Writing & Marketing</li>
-                        <li>Consulting & Business Services</li>
-                    </ul>
-                </CardContent>
-            </Card>
-            <Card className="shadow-lg hover:shadow-xl transition-shadow">
-                 <CardHeader>
-                    <div className="flex items-center gap-4">
-                       <div className="p-3 bg-accent/10 rounded-full">
-                         <Zap className="h-7 w-7 text-accent" />
-                       </div>
-                        <CardTitle className="font-headline text-2xl">Quick Jobs</CardTitle>
-                    </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <p className="text-muted-foreground">
-                        For everyday tasks you need done now. Get immediate help from trusted locals for urgent, on-demand needs.
-                    </p>
-                     <ul className="list-disc list-inside text-muted-foreground space-y-1">
-                        <li>Urgent house cleaning for Diwali</li>
-                        <li>Help with a school project</li>
-                        <li>Studio setup for a YouTube channel</li>
-                        <li>Any kind of local errand or assistance</li>
-                    </ul>
-                </CardContent>
-            </Card>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {steps.map((step, index) => (
+            <div key={index} className="group flex flex-col items-center text-center p-6 bg-background rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div className="relative w-full h-48 mb-6 overflow-hidden rounded-lg">
+                    <Image 
+                        data-ai-hint={step.dataAiHint}
+                        src={step.image}
+                        alt={step.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                </div>
+                <div className="bg-primary/10 p-4 rounded-full mb-4">
+                    <step.icon className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold font-headline mb-2">{step.title}</h3>
+                <p className="text-muted-foreground">{step.description}</p>
+            </div>
+          ))}
         </div>
-        
-        <div className="mt-16 text-center bg-background/80 p-8 rounded-lg border border-primary/20 shadow-sm">
-            <BrainCircuit className="h-10 w-10 text-primary mx-auto mb-4" />
-            <h3 className="text-2xl font-bold font-headline mb-2">Powered by Smart Matching</h3>
-            <p className="text-muted-foreground max-w-4xl mx-auto">
-                Our algorithm goes beyond simple location searches. We match you based on multiple parameters—including real-time availability, specific skills, and a freelancer's readiness to meet in person—to find the perfect person for your job, faster than ever.
-            </p>
-        </div>
-
       </div>
     </section>
   );
