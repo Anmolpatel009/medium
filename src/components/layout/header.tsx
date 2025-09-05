@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, ChevronDown, LogOut, LayoutDashboard, Briefcase, Users, DollarSign, Calendar, Star, Construction, FileText, UserCheck, MessageSquare, Sun, Moon, Bot } from 'lucide-react';
+import { Menu, X, ChevronDown, LogOut, LayoutDashboard, Briefcase, Users, DollarSign, Calendar, Star, Construction, FileText, UserCheck, MessageSquare, Sun, Moon, Bot, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import {
@@ -190,6 +190,7 @@ export default function Header() {
                 <Link href="/nearby" className="text-lg font-medium text-foreground/80 hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>Nearby</Link>
                 <Link href="/showall" className="text-lg font-medium text-foreground/80 hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>Show All</Link>
                 <Link href="/ai-skill-test" className="text-lg font-medium text-foreground/80 hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>AI Skill Test</Link>
+                <Link href="/why-indexes" className="text-lg font-medium text-foreground/80 hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>Why Indexes?</Link>
             </nav>
             <div className="mt-auto flex flex-col gap-2">
                {loading && <Skeleton className="h-10 w-full" />}
@@ -242,6 +243,9 @@ export default function Header() {
             </DropdownMenuItem>
              <DropdownMenuItem asChild>
               <Link href="/ai-skill-test">AI Skill Test</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/why-indexes">Why Indexes?</Link>
             </DropdownMenuItem>
           </NavLink>
         </nav>
