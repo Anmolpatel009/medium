@@ -1,29 +1,29 @@
 
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // By default, deny all reads and writes
-    match /{document=**} {
-      allow read, write: if false;
-    }
-
-    // Allow public read access for tasks and user profiles
-    match /tasks/{taskId} {
-      allow get, list: if true;
-      allow create, update: if request.auth != null;
-    }
-
+    // Allow anyone to read user profiles for the directory.
+    // Allow only authenticated users to write to their own document.
     match /users/{userId} {
-      allow get, list: if true;
-      allow create, update: if request.auth != null;
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Only authenticated users can express interest
-    match /intrested/{interestId} {
-      allow get, list: if true;
+    // Allow authenticated users to create tasks,
+    // allow anyone to read tasks,
+    // allow the task poster to update and delete their own tasks.
+    // Note: The document ID for the poster must be `posterId` for this to work.
+    match /tasks/{taskId} {
       allow create: if request.auth != null;
+      allow read: if true;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.clientId;
     }
+
+    // Allow authenticated users to create an "interest" document.
+    match /intrested/{interestId} {
+      allow read, create: if request.auth != null;
+    }
+
   }
 }
