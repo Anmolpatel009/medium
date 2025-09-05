@@ -122,7 +122,7 @@ export default function TaskSubmissionModal({ isOpen, onOpenChange, user }: Task
         taskType: values.taskType,
         createdAt: serverTimestamp(),
         status: 'open',
-        clientId: user?.id || null, // Add clientId
+        clientId: user?.uid || null, // Fix: Use UID for the client ID
         interestedCount: 0,
       });
       toast({ title: 'Success!', description: 'Your task has been posted.' });
@@ -193,7 +193,7 @@ export default function TaskSubmissionModal({ isOpen, onOpenChange, user }: Task
               <FormField control={form.control} name="posterName" render={({ field }) => (
                 <FormItem><FormLabel>Your Name *</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
-              <FormField control={form.control} name="posterEmail" render={({ field }) => (
+              <FormField control={form.control} name="posterEmail" render={({ field })_=> (
                 <FormItem><FormLabel>Your Email *</FormLabel><FormControl><Input placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
             </div>

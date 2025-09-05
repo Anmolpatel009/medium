@@ -41,6 +41,8 @@ export default function InterestModal({ isOpen, onOpenChange, taskId, user, onIn
           title: 'Already Interested',
           description: 'You have already shown interest in this task.',
         });
+        setIsSubmitting(false);
+        onOpenChange(false);
         return;
       }
       

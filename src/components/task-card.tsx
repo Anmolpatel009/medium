@@ -9,12 +9,23 @@ import { MapPin, Clock, Mail, Phone, ThumbsUp, ThumbsDown, Users, Zap, Trash2, U
 import InterestModal from '@/components/interest-modal';
 import ViewInterestedModal from './view-interested-modal';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, runTransaction, DocumentReference, GeoPoint } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { doc, getDoc, runTransaction, DocumentReference, GeoPoint, deleteDoc } from 'firebase/firestore';
 import { app, db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 
 interface TaskCardProps {
@@ -171,43 +182,39 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
 
     try {
       await runTransaction(db, async (transaction) => {
-        // --- All READ operations must come first ---
         const taskDoc = await transaction.get(taskRef);
-        const freelancerDoc = await transaction.get(freelancerRef);
-
         if (!taskDoc.exists() || taskDoc.data().status !== 'open') {
           throw new Error("This task is no longer available.");
         }
-        if (!freelancerDoc.exists()) {
-          throw new Error("Freelancer user not found.");
-        }
         
-        const clientId = taskDoc.data().clientId;
-        let clientRef: DocumentReference | null = null;
-        let clientDoc: any = null;
-        if (clientId) {
-            clientRef = doc(db, 'users', clientId);
-            clientDoc = await transaction.get(clientRef);
+        const freelancerDoc = await transaction.get(freelancerRef);
+        if (!freelancerDoc.exists()) {
+          throw new Error("Freelancer user document not found.");
         }
 
-        // --- All WRITE operations must come after reads ---
+        const clientId = taskDoc.data().clientId;
+        const clientRef = doc(db, 'users', clientId);
+        const clientDoc = await transaction.get(clientRef);
+        if (!clientDoc.exists()) {
+          throw new Error("Client user document not found.");
+        }
+
+        // --- All WRITE operations must come after all READ operations ---
         
-        // 1. Update task status
+        // 1. Update task status and assign it
         transaction.update(taskRef, { 
           status: 'assigned',
           assignedTo: currentUser.id,
           assignedToName: currentUser.name || 'Anonymous',
         });
 
-        // 2. Update freelancer's project count
+        // 2. Update freelancer's active project count
         const newFreelancerActiveProjects = (freelancerDoc.data().activeProjects || 0) + 1;
         transaction.update(freelancerRef, { activeProjects: newFreelancerActiveProjects });
         
-        // 3. Update client's project count
-        if (clientDoc && clientRef && clientDoc.exists()) {
-            const newClientActiveProjects = (clientDoc.data().activeProjects || 0) + 1;
-            transaction.update(clientRef, { activeProjects: newClientActiveProjects });
-        }
+        // 3. Update client's active project count
+        const newClientActiveProjects = (clientDoc.data().activeProjects || 0) + 1;
+        transaction.update(clientRef, { activeProjects: newClientActiveProjects });
       });
 
       toast({ title: 'Task Accepted!', description: "The task has been added to your active projects." });
@@ -225,10 +232,15 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
     }
   }
   
-  const handleDeleteTask = () => {
-      // TODO: Implement logic to delete the task from firestore
-      // This will involve adding a confirmation dialog before deleting.
-      alert("Delete Task functionality to be implemented.");
+  const handleDeleteTask = async () => {
+      try {
+        await deleteDoc(doc(db, "tasks", taskState.id));
+        toast({ title: "Task Deleted", description: "The task has been successfully removed." });
+        // Optionally, trigger a parent component to refresh the list
+      } catch (error) {
+        console.error("Error deleting task:", error);
+        toast({ variant: 'destructive', title: "Error", description: "Could not delete the task. Please try again." });
+      }
   }
 
   const renderPublicButtons = () => {
@@ -266,9 +278,26 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
   const renderClientButtons = () => {
       return (
         <div className="flex flex-col items-start gap-2">
-            <Button size="sm" variant="destructive" onClick={handleDeleteTask}>
-                <Trash2 className="mr-2 h-4 w-4" /> Delete Task
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button size="sm" variant="destructive">
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete Task
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete this task
+                    and remove it from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteTask}>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             {taskState.interestedCount > 0 && (
                  <Button size="sm" variant="outline" className="h-auto py-1 px-2" onClick={handleViewInterestedClick}>
                     <Users className="mr-2 h-4 w-4" /> {taskState.interestedCount} interested. View
@@ -347,5 +376,3 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
     </>
   );
 }
-
-    
