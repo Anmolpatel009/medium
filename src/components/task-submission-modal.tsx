@@ -122,7 +122,7 @@ export default function TaskSubmissionModal({ isOpen, onOpenChange, user }: Task
         taskType: values.taskType,
         createdAt: serverTimestamp(),
         status: 'open',
-        clientId: user?.uid || null, // Fix: Use UID for the client ID
+        clientId: user?.uid || null,
         interestedCount: 0,
       });
       toast({ title: 'Success!', description: 'Your task has been posted.' });
@@ -216,7 +216,7 @@ export default function TaskSubmissionModal({ isOpen, onOpenChange, user }: Task
                     <SelectItem value="flexible">Flexible</SelectItem>
                   </SelectContent>
                 </Select><FormMessage />
-              </FormItem>
+              </Item>
             )} />
             <DialogFooter className="pt-4">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
