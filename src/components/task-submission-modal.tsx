@@ -193,7 +193,7 @@ export default function TaskSubmissionModal({ isOpen, onOpenChange, user }: Task
               <FormField control={form.control} name="posterName" render={({ field }) => (
                 <FormItem><FormLabel>Your Name *</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
-              <FormField control={form.control} name="posterEmail" render={({ field })_=> (
+              <FormField control={form.control} name="posterEmail" render={({ field }) => (
                 <FormItem><FormLabel>Your Email *</FormLabel><FormControl><Input placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
             </div>
@@ -216,7 +216,7 @@ export default function TaskSubmissionModal({ isOpen, onOpenChange, user }: Task
                     <SelectItem value="flexible">Flexible</SelectItem>
                   </SelectContent>
                 </Select><FormMessage />
-              </Item>
+              </FormItem>
             )} />
             <DialogFooter className="pt-4">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
