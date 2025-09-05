@@ -1,9 +1,10 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow all reads and writes to all collections for development.
-    // WARNING: This is insecure and should be replaced with proper rules
-    // before going to production.
+    // Allow all reads and writes to all collections.
+    // This is for development purposes only.
+    // Secure these rules before deploying to production.
     match /{document=**} {
       allow read, write: if true;
     }
