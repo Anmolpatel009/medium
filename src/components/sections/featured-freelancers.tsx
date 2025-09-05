@@ -7,13 +7,20 @@ import { db } from '@/lib/firebase';
 import type { User } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import FreelancerCard from '@/components/freelancer-card';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 export default function FeaturedFreelancers() {
   const [freelancers, setFreelancers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, 'users'), where('role', '==', 'freelancer'), limit(6));
+    const q = query(collection(db, 'users'), where('role', '==', 'freelancer'), limit(8));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const freelancersData: User[] = [];
       querySnapshot.forEach((doc) => {
@@ -37,18 +44,32 @@ export default function FeaturedFreelancers() {
                 <p className="text-lg text-muted-foreground mt-2">Discover skilled freelancers ready to tackle your next project.</p>
             </div>
             
-            <div className="flex flex-wrap justify-center gap-8">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent>
                  {loading && 
                     [...Array(6)].map((_, i) => (
-                        <div key={i} className="w-full max-w-[220px] h-[280px] bg-muted rounded-lg p-4">
-                            <Skeleton className="h-full w-full" />
-                        </div>
+                       <CarouselItem key={i} className="md:basis-1/3 lg:basis-1/4 xl:basis-1/5 flex justify-center">
+                          <div className="w-full max-w-[220px] h-[280px] bg-muted rounded-lg p-4">
+                              <Skeleton className="h-full w-full" />
+                          </div>
+                        </CarouselItem>
                     ))
                  }
                  {!loading && freelancers.map((freelancer) => (
-                    <FreelancerCard key={freelancer.id} freelancer={freelancer} context="featured" />
+                    <CarouselItem key={freelancer.id} className="md:basis-1/3 lg:basis-1/4 xl:basis-1/5 flex justify-center">
+                       <FreelancerCard freelancer={freelancer} context="featured" />
+                    </CarouselItem>
                 ))}
-            </div>
+              </CarouselContent>
+              <CarouselPrevious className="hidden md:flex" />
+              <CarouselNext className="hidden md:flex" />
+            </Carousel>
 
             { !loading && freelancers.length === 0 && (
                 <div className="text-center py-12 border-2 border-dashed rounded-lg">
