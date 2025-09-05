@@ -3,7 +3,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // Allow anyone to read user profiles for the directory.
-    // Allow authenticated users to write to their own document.
+    // Only allow authenticated users to write to their own document.
     match /users/{userId} {
       allow read: if true;
       allow write: if request.auth != null && request.auth.uid == userId;
@@ -11,26 +11,21 @@ service cloud.firestore {
 
     // Allow authenticated users to create tasks.
     // Allow anyone to read tasks.
-    // Allow the task poster to update and delete their own tasks.
-    // Allow any authenticated user to update the interestedCount or assign the task to themselves.
+    // Allow the task poster to update/delete, or a freelancer to show interest.
     match /tasks/{taskId} {
       allow create: if request.auth != null;
       allow read: if true;
-      
-      // Client can update/delete their own task.
-      // A freelancer can update it ONLY to accept it.
-      allow update: if request.auth != null && 
-                    (request.auth.uid == resource.data.clientId || 
-                     (request.resource.data.status == 'assigned' && request.resource.data.assignedTo == request.auth.uid));
-
+      // Allow update if user is the client OR if they are only updating the interestedCount
+      allow update: if request.auth != null && (
+        request.auth.uid == resource.data.clientId ||
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['interestedCount'])
+      );
       allow delete: if request.auth != null && request.auth.uid == resource.data.clientId;
     }
 
-    // Allow authenticated users to show interest in a task,
-    // as long as they are the freelancer creating the interest document.
+    // Allow authenticated users to show interest in a task.
     match /intrested/{interestId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null && request.resource.data.freelancerId == request.auth.uid;
+      allow read, create: if request.auth != null;
     }
   }
 }
