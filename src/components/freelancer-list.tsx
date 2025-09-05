@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -6,10 +7,13 @@ import { db } from '@/lib/firebase';
 import type { User } from '@/types';
 import FreelancerCard from '@/components/freelancer-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Terminal } from 'lucide-react';
 
 export default function FreelancerList() {
   const [freelancers, setFreelancers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // This query now includes an orderBy clause. If an index is missing, 
@@ -25,9 +29,11 @@ export default function FreelancerList() {
         freelancersData.push({ id: doc.id, ...doc.data() } as User);
       });
       setFreelancers(freelancersData);
+      setError(null);
       setLoading(false);
-    }, (error) => {
-        console.error("Error fetching freelancers: ", error);
+    }, (err) => {
+        console.error("Error fetching freelancers: ", err);
+        setError(err.message);
         // The error message in the browser console will contain the link to create the necessary index.
         setLoading(false);
     });
@@ -58,10 +64,22 @@ export default function FreelancerList() {
 
   if (freelancers.length === 0) {
     return (
-      <div className="text-center py-12 border-2 border-dashed rounded-lg">
-        <h3 className="text-xl font-semibold text-muted-foreground">No freelancers found.</h3>
-        <p className="text-muted-foreground mt-2">Looks like no one has signed up as a freelancer yet, or the required Firestore index has not been created.</p>
-      </div>
+      <Alert>
+        <Terminal className="h-4 w-4" />
+        <AlertTitle>Action Required: Create a Firestore Index</AlertTitle>
+        <AlertDescription>
+            <p className="font-semibold">This page is not loading because a Firestore index is missing.</p>
+            <p className="mt-2">To fix this, please follow these steps:</p>
+            <ol className="list-decimal list-inside mt-2 space-y-1">
+                <li>Open your browser's developer tools (Right-click -> Inspect -> Console).</li>
+                <li>Look for an error message from Firestore that starts with "FAILED_PRECONDITION".</li>
+                <li>Click the link within that error message. It will take you to the Firebase console to create the necessary index.</li>
+                <li>Click "Create Index". The creation process takes a few minutes.</li>
+                <li>Once the index is built, refresh this page. The freelancers will appear.</li>
+            </ol>
+            <p className="mt-2 text-xs text-muted-foreground">If no freelancers have signed up yet, this message will also appear, but the console error is the most likely cause.</p>
+        </AlertDescription>
+      </Alert>
     );
   }
 
