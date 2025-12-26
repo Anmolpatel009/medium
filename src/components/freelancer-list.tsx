@@ -2,8 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 import type { User } from '@/types';
 import FreelancerCard from '@/components/freelancer-card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -16,29 +15,27 @@ export default function FreelancerList() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // This query now includes an orderBy clause. If an index is missing, 
-    // Firestore will provide a console error with a link to create it.
-    const q = query(
-        collection(db, 'users'), 
-        where('role', '==', 'freelancer'),
-        orderBy('createdAt', 'desc')
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const freelancersData: User[] = [];
-      querySnapshot.forEach((doc) => {
-        freelancersData.push({ id: doc.id, ...doc.data() } as User);
-      });
-      setFreelancers(freelancersData);
-      setError(null);
-      setLoading(false);
-    }, (err) => {
+    const fetchFreelancers = async () => {
+      try {
+        const { data, error: err } = await supabase
+          .from('users')
+          .select('*')
+          .eq('role', 'freelancer')
+          .order('created_at', { ascending: false });
+
+        if (err) throw err;
+
+        setFreelancers(data as User[]);
+        setError(null);
+      } catch (err: any) {
         console.error("Error fetching freelancers: ", err);
         setError(err.message);
-        // The error message in the browser console will contain the link to create the necessary index.
+      } finally {
         setLoading(false);
-    });
+      }
+    };
 
-    return () => unsubscribe();
+    fetchFreelancers();
   }, []);
 
   if (loading) {

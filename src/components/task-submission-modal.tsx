@@ -5,8 +5,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { supabase } from '@/lib/supabase';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
 } from '@/components/ui/dialog';
@@ -110,21 +109,27 @@ export default function TaskSubmissionModal({ isOpen, onOpenChange, user }: Task
   const onSubmit = async (values: FormData) => {
     setIsSubmitting(true);
     try {
-      await addDoc(collection(db, 'tasks'), {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+
+      const taskData = {
         title: values.taskTitle,
         description: values.taskDescription,
         location: values.taskLocation,
-        posterName: values.posterName,
-        posterEmail: values.posterEmail,
-        posterPhone: values.posterPhone,
-        posterWillPay: values.posterWillPay,
+        poster_name: values.posterName,
+        poster_email: values.posterEmail,
+        poster_phone: values.posterPhone,
+        poster_will_pay: values.posterWillPay,
         timeframe: values.timeframe,
-        taskType: values.taskType,
-        createdAt: serverTimestamp(),
+        task_type: values.taskType,
         status: 'open',
-        clientId: user?.uid || null,
-        interestedCount: 0,
-      });
+        client_id: authUser?.id || null,
+        interested_count: 0,
+      };
+
+      const { error } = await supabase.from('tasks').insert([taskData]);
+
+      if (error) throw error;
+
       toast({ title: 'Success!', description: 'Your task has been posted.' });
       form.reset();
       onOpenChange(false);

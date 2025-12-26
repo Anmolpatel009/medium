@@ -2,8 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { collection, onSnapshot, query, where, limit } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 import type { User } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import FreelancerCard from '@/components/freelancer-card';
@@ -20,20 +19,25 @@ export default function FeaturedFreelancers() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, 'users'), where('role', '==', 'freelancer'), limit(8));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const freelancersData: User[] = [];
-      querySnapshot.forEach((doc) => {
-        freelancersData.push({ id: doc.id, ...doc.data() } as User);
-      });
-      setFreelancers(freelancersData);
-      setLoading(false);
-    }, (error) => {
-        console.error("Error fetching featured freelancers:", error);
-        setLoading(false);
-    });
+    const fetchFeaturedFreelancers = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('role', 'freelancer')
+          .limit(8);
 
-    return () => unsubscribe();
+        if (error) throw error;
+
+        setFreelancers(data as User[]);
+      } catch (error) {
+        console.error("Error fetching featured freelancers:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedFreelancers();
   }, []);
 
   return (

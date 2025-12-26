@@ -12,8 +12,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { app } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
@@ -29,7 +28,6 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const auth = getAuth(app);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -42,7 +40,10 @@ export default function LoginPage() {
   const onSubmit = async (values: FormData) => {
     setIsSubmitting(true);
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
       toast({
         title: 'Login Successful',
         description: 'Redirecting to your dashboard...',

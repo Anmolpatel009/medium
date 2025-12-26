@@ -3,9 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import type { User } from '@/types';
-import { getAuth, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { app, db } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
@@ -17,28 +15,39 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const auth = getAuth(app);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
-      if (firebaseUser) {
-        const userDocRef = doc(db, 'users', firebaseUser.uid);
-        const userDoc = await getDoc(userDocRef);
-
-        if (userDoc.exists()) {
-          setUser({ id: userDoc.id, ...userDoc.data() } as User);
-        } else {
-          console.error("User document not found in Firestore.");
+    const fetchUser = async () => {
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        
+        if (!authUser) {
           router.push('/login');
+          return;
         }
-      } else {
-        router.push('/login');
-      }
-      setLoading(false);
-    });
 
-    return () => unsubscribe();
-  }, [auth, router]);
+        const { data: userData, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('uid', authUser.id)
+          .single();
+
+        if (error || !userData) {
+          console.error("User document not found in database.");
+          router.push('/login');
+        } else {
+          setUser(userData as User);
+        }
+      } catch (err) {
+        console.error('Error fetching user:', err);
+        router.push('/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [router]);
 
   if (loading) {
     return (

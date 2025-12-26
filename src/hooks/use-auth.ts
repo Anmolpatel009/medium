@@ -2,30 +2,38 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getAuth, onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
-import { app } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
+import type { User as AuthUser } from '@supabase/supabase-js';
 
 export function useAuth() {
-  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
-  const auth = getAuth(app);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser);
+    // Check current user on mount
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
       setLoading(false);
     });
 
-    return () => unsubscribe();
-  }, [auth]);
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, []);
 
   const logout = async () => {
     try {
-      await signOut(auth);
+      await supabase.auth.signOut();
       toast({
         title: 'Logged Out',
         description: 'You have been successfully logged out.',

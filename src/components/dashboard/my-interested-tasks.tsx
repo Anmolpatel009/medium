@@ -2,8 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { collection, query, where, getDocs, doc, documentId, onSnapshot, orderBy } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 import { Task, Interest } from '@/types';
 import TaskCard from '@/components/task-card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -19,57 +18,46 @@ export default function MyInterestedTasks({ freelancerId }: MyInterestedTasksPro
   useEffect(() => {
     if (!freelancerId) return;
 
-    // This query requires a composite index.
-    const interestsQuery = query(
-      collection(db, 'intrested'),
-      where('freelancerId', '==', freelancerId),
-      orderBy('interestedAt', 'desc')
-    );
+    const fetchInterestedTasks = async () => {
+      try {
+        const { data: interests, error: interestsError } = await supabase
+          .from('interests')
+          .select('*')
+          .eq('freelancer_id', freelancerId)
+          .order('interested_at', { ascending: false });
 
-    const unsubscribeInterests = onSnapshot(interestsQuery, async (snapshot) => {
-      if (snapshot.empty) {
-        setTasks([]);
-        setLoading(false);
-        return;
-      }
-      
-      const interests = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Interest));
-      const taskIds = interests.map(interest => interest.taskId);
-      
-      if (taskIds.length === 0) {
+        if (interestsError) throw interestsError;
+
+        if (!interests || interests.length === 0) {
           setTasks([]);
           setLoading(false);
           return;
-      }
-      
-      const tasksQuery = query(collection(db, 'tasks'), where(documentId(), 'in', taskIds));
-      
-      const unsubscribeTasks = onSnapshot(tasksQuery, (taskSnapshot) => {
-        const tasksData: Task[] = [];
-        taskSnapshot.forEach((doc) => {
-          tasksData.push({ id: doc.id, ...doc.data() } as Task);
-        });
+        }
 
-        const sortedTasks = tasksData.sort((a, b) => {
-            const indexA = taskIds.indexOf(a.id);
-            const indexB = taskIds.indexOf(b.id);
-            return indexA - indexB;
+        const taskIds = interests.map((interest: Interest) => interest.task_id);
+
+        const { data: tasksData, error: tasksError } = await supabase
+          .from('tasks')
+          .select('*')
+          .in('id', taskIds);
+
+        if (tasksError) throw tasksError;
+
+        const sortedTasks = (tasksData as Task[]).sort((a, b) => {
+          const indexA = taskIds.indexOf(a.id);
+          const indexB = taskIds.indexOf(b.id);
+          return indexA - indexB;
         });
 
         setTasks(sortedTasks);
+      } catch (error) {
+        console.error("Error fetching interested tasks:", error);
+      } finally {
         setLoading(false);
-      }, (error) => {
-          console.error("Error fetching tasks:", error);
-          setLoading(false);
-      });
+      }
+    };
 
-      return () => unsubscribeTasks();
-    }, (error) => {
-      console.error("Error fetching interests:", error);
-      setLoading(false);
-    });
-
-    return () => unsubscribeInterests();
+    fetchInterestedTasks();
   }, [freelancerId]);
 
   if (loading) {

@@ -16,9 +16,7 @@ import * as z from 'zod';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, LocateFixed } from 'lucide-react';
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { getFirestore, doc, setDoc, GeoPoint, serverTimestamp } from 'firebase/firestore';
-import { app } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -115,35 +113,40 @@ function SignupFormComponent() {
 
   const onSubmit = async (values: FormData) => {
     setIsSubmitting(true);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user;
-      
-      await sendEmailVerification(user);
+      // Create user with Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+      });
 
-      const [lat, lng] = values.location ? values.location.split(',').map(coord => parseFloat(coord.trim())) : [0,0];
+      if (authError) throw authError;
+      
+      if (!authData.user) throw new Error('User creation failed');
+      
+      if (!authData.user.id) throw new Error('Auth user ID is null or undefined');
+
+      const [lat, lng] = values.location ? values.location.split(',').map(coord => parseFloat(coord.trim())) : [0, 0];
 
       const userData: any = {
+        uid: authData.user.id,
         email: values.email,
         name: values.name,
         phone: values.phone || '',
         address: values.address || '',
-        location: new GeoPoint(lat, lng),
         role: values.role,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        activeProjects: 0,
-        completedProjects: 0,
-        tasksApplied: 0,
-        totalEarnings: 0,
-        unreadMessages: 0,
+        active_projects: 0,
+        completed_projects: 0,
+        tasks_applied: 0,
+        total_earnings: 0,
+        unread_messages: 0,
+        location_lat: lat || null,
+        location_lng: lng || null,
       };
 
       if (values.role === 'freelancer') {
-        userData.freelancerProfile = {
+        userData.freelancer_profile = {
           fullName: values.name,
           skills: values.skills?.split(',').map(s => s.trim()) || [],
           services: values.services || '',
@@ -151,13 +154,18 @@ function SignupFormComponent() {
           hourlyRate: values.hourlyRate || 0,
         };
       } else if (values.role === 'client') {
-        userData.clientProfile = {
+        userData.client_profile = {
           companyName: values.companyName || '',
           industry: values.industry || '',
         };
       }
       
-      await setDoc(doc(db, 'users', user.uid), userData);
+      // Insert user data into users table
+      const { error: dbError } = await supabase
+        .from('users')
+        .insert([userData]);
+
+      if (dbError) throw dbError;
 
       toast({ 
         title: 'Success!', 
@@ -168,7 +176,13 @@ function SignupFormComponent() {
 
     } catch (error: any) {
       console.error('Signup error:', error);
-      toast({ variant: 'destructive', title: 'Error', description: error.message || 'Failed to create account. Please try again.' });
+      console.error('Error details:', {
+        message: error?.message,
+        code: error?.code,
+        status: error?.status,
+        fullError: JSON.stringify(error)
+      });
+      toast({ variant: 'destructive', title: 'Error', description: error?.message || error?.error_description || 'Failed to create account. Please try again.' });
     } finally {
       setIsSubmitting(false);
     }

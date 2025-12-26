@@ -3,8 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import type { Interest, User, Task } from '@/types';
-import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, orderBy, Timestamp } from 'firebase/firestore';
+import { supabase } from '@/lib/supabase';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import FreelancerCard from './freelancer-card';
@@ -26,25 +25,30 @@ export default function ViewInterestedModal({ isOpen, onOpenChange, taskId }: Vi
       const fetchInterested = async () => {
         setLoading(true);
         try {
-          const interestsQuery = query(
-            collection(db, 'intrested'),
-            where('taskId', '==', taskId)
-          );
-          const querySnapshot = await getDocs(interestsQuery);
-          
-          const freelancersData: User[] = [];
-          querySnapshot.forEach(doc => {
-            const interestData = doc.data();
-            // The freelancer profile is nested inside the 'freelancer' map
-            if (interestData.freelancer) {
-              freelancersData.push({
-                ...(interestData.freelancer as User),
-                id: interestData.freelancerId, 
-              });
-            }
-          });
-          
-          setInterestedFreelancers(freelancersData);
+          const { data: interests, error } = await supabase
+            .from('interests')
+            .select('*')
+            .eq('task_id', taskId);
+
+          if (error) throw error;
+
+          // Get freelancer IDs from interests
+          const freelancerIds = interests.map((interest: Interest) => interest.freelancer_id);
+
+          if (freelancerIds.length === 0) {
+            setInterestedFreelancers([]);
+            return;
+          }
+
+          // Fetch user details for each freelancer
+          const { data: freelancers, error: freelancersError } = await supabase
+            .from('users')
+            .select('*')
+            .in('id', freelancerIds);
+
+          if (freelancersError) throw freelancersError;
+
+          setInterestedFreelancers(freelancers as User[]);
         } catch (error) {
           console.error("Error fetching interested freelancers:", error);
           toast({ variant: 'destructive', title: "Error", description: "Could not load interested freelancers." });

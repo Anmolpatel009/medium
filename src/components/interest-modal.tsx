@@ -2,8 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, query, where, getDocs, doc, runTransaction, updateDoc } from 'firebase/firestore';
+import { supabase } from '@/lib/supabase';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
 } from '@/components/ui/dialog';
@@ -32,10 +31,15 @@ export default function InterestModal({ isOpen, onOpenChange, taskId, user, onIn
 
     setIsSubmitting(true);
     try {
-      const interestQuery = query(collection(db, 'intrested'), where('taskId', '==', taskId), where('freelancerId', '==', user.id));
-      const existingInterest = await getDocs(interestQuery);
+      // Check if already interested
+      const { data: existingInterest, error: checkError } = await supabase
+        .from('interests')
+        .select('*')
+        .eq('task_id', taskId)
+        .eq('freelancer_id', user.id)
+        .single();
 
-      if (!existingInterest.empty) {
+      if (existingInterest && !checkError) {
         toast({
           variant: 'destructive',
           title: 'Already Interested',
@@ -45,33 +49,53 @@ export default function InterestModal({ isOpen, onOpenChange, taskId, user, onIn
         onOpenChange(false);
         return;
       }
-      
-      const taskRef = doc(db, 'tasks', taskId);
-      const userRef = doc(db, 'users', user.id);
 
-      await runTransaction(db, async (transaction) => {
-        const taskDoc = await transaction.get(taskRef);
-        const userDoc = await transaction.get(userRef);
+      // Get task data
+      const { data: taskData, error: taskError } = await supabase
+        .from('tasks')
+        .select('*')
+        .eq('id', taskId)
+        .single();
 
-        if (!taskDoc.exists() || !userDoc.exists()) {
-          throw new Error("Task or User does not exist!");
-        }
+      if (taskError || !taskData) throw new Error('Task not found');
 
-        const newInterestedCount = (taskDoc.data().interestedCount || 0) + 1;
-        transaction.update(taskRef, { interestedCount: newInterestedCount });
+      // Insert interest
+      const { error: insertError } = await supabase
+        .from('interests')
+        .insert([{
+          task_id: taskId,
+          task_title: taskData.title,
+          freelancer_id: user.id,
+          interested_at: new Date().toISOString(),
+        }]);
 
-        const newTasksAppliedCount = (userDoc.data().tasksApplied || 0) + 1;
-        transaction.update(userRef, { tasksApplied: newTasksAppliedCount });
-        
-        const interestRef = doc(collection(db, 'intrested'));
-        transaction.set(interestRef, {
-            taskId: taskId,
-            taskTitle: taskDoc.data().title, // Store task title for easy display
-            freelancerId: user.id,
-            freelancer: userDoc.data(),
-            interestedAt: serverTimestamp(),
-        });
-      });
+      if (insertError) throw insertError;
+
+      // Update task interested count
+      const newInterestedCount = (taskData.interested_count || 0) + 1;
+      const { error: updateTaskError } = await supabase
+        .from('tasks')
+        .update({ interested_count: newInterestedCount })
+        .eq('id', taskId);
+
+      if (updateTaskError) throw updateTaskError;
+
+      // Update user tasks_applied count
+      const { data: userData, error: getUserError } = await supabase
+        .from('users')
+        .select('tasks_applied')
+        .eq('id', user.id)
+        .single();
+
+      if (getUserError) throw getUserError;
+
+      const newTasksAppliedCount = (userData?.tasks_applied || 0) + 1;
+      const { error: updateUserError } = await supabase
+        .from('users')
+        .update({ tasks_applied: newTasksAppliedCount })
+        .eq('id', user.id);
+
+      if (updateUserError) throw updateUserError;
 
       toast({ title: 'Success!', description: 'Your interest has been recorded.' });
       onInterestSubmitted();

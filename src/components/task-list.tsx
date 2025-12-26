@@ -2,8 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 import { Task } from '@/types';
 import TaskCard from '@/components/task-card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,17 +12,23 @@ export default function TaskList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, 'tasks'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const tasksData: Task[] = [];
-      querySnapshot.forEach((doc) => {
-        tasksData.push({ id: doc.id, ...doc.data() } as Task);
-      });
-      setTasks(tasksData);
-      setLoading(false);
-    });
+    const fetchTasks = async () => {
+      const { data, error } = await supabase
+        .from('tasks')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    return () => unsubscribe();
+      if (error) {
+        console.error('Error fetching tasks:', error);
+        setLoading(false);
+        return;
+      }
+
+      setTasks(data as Task[]);
+      setLoading(false);
+    };
+
+    fetchTasks();
   }, []);
 
   if (loading) {

@@ -2,8 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 import { Task } from '@/types';
 import TaskCard from '@/components/task-card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -20,28 +19,28 @@ export default function ActiveTasksList({ freelancerId }: ActiveTasksListProps) 
     if (!freelancerId) {
         setLoading(false);
         return;
-    };
+    }
     
-    // This query requires a composite index.
-    const q = query(
-        collection(db, 'tasks'), 
-        where('assignedTo', '==', freelancerId),
-        where('status', '==', 'assigned'),
-        orderBy('createdAt', 'desc')
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const tasksData: Task[] = [];
-      querySnapshot.forEach((doc) => {
-        tasksData.push({ id: doc.id, ...doc.data() } as Task);
-      });
-      setTasks(tasksData);
-      setLoading(false);
-    }, (error) => {
-        console.error("Error fetching active tasks:", error);
-        setLoading(false);
-    });
+    const fetchActiveTasks = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('tasks')
+          .select('*')
+          .eq('assigned_to', freelancerId)
+          .eq('status', 'assigned')
+          .order('created_at', { ascending: false });
 
-    return () => unsubscribe();
+        if (error) throw error;
+
+        setTasks(data as Task[]);
+      } catch (error) {
+        console.error("Error fetching active tasks:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActiveTasks();
   }, [freelancerId]);
 
   if (loading) {

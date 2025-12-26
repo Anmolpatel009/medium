@@ -9,9 +9,7 @@ import { MapPin, Clock, Mail, Phone, ThumbsUp, ThumbsDown, Users, Zap, Trash2, U
 import InterestModal from '@/components/interest-modal';
 import ViewInterestedModal from './view-interested-modal';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { getAuth, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc, runTransaction, DocumentReference, GeoPoint, deleteDoc } from 'firebase/firestore';
-import { app, db } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -34,15 +32,18 @@ interface TaskCardProps {
 }
 
 // Haversine formula to calculate distance between two lat/lng points
-function getDistanceInKm(point1: GeoPoint, point2: GeoPoint) {
+function getDistanceInKm(point1: number[], point2: number[]) {
     if (!point1 || !point2) return null;
 
+    const [lng1, lat1] = point1;
+    const [lng2, lat2] = point2;
+
     const R = 6371; // Radius of the earth in km
-    const dLat = (point2.latitude - point1.latitude) * (Math.PI / 180);
-    const dLon = (point2.longitude - point1.longitude) * (Math.PI / 180);
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lng2 - lng1) * (Math.PI / 180);
     const a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(point1.latitude * (Math.PI / 180)) * Math.cos(point2.latitude * (Math.PI / 180)) *
+        Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c; // Distance in km
@@ -52,7 +53,7 @@ function getDistanceInKm(point1: GeoPoint, point2: GeoPoint) {
 
 export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps) {
   const [taskState, setTaskState] = useState(task);
-  const [interestedCount, setInterestedCount] = useState(taskState.interestedCount || 0);
+  const [interestedCount, setInterestedCount] = useState(taskState.interested_count || 0);
   const [feedback, setFeedback] = useState<'interested' | 'not-interested' | null>(null);
   const [isInterestModalOpen, setIsInterestModalOpen] = useState(false);
   const [isViewInterestedModalOpen, setIsViewInterestedModalOpen] = useState(false);
@@ -63,40 +64,54 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
 
   const router = useRouter();
   const { toast } = useToast();
-  const auth = getAuth(app);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        const userDocRef = doc(db, 'users', firebaseUser.uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          setCurrentUser({ id: userDoc.id, ...userDoc.data() } as User);
+    const fetchCurrentUser = async () => {
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (authUser) {
+          const { data: userData, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('uid', authUser.id)
+            .single();
+
+          if (!error && userData) {
+            setCurrentUser(userData as User);
+          } else {
+            setCurrentUser(null);
+          }
         } else {
           setCurrentUser(null);
         }
-      } else {
+      } catch (err) {
+        console.error('Error fetching current user:', err);
         setCurrentUser(null);
+      } finally {
+        setAuthLoading(false);
       }
-      setAuthLoading(false);
-    });
-    return () => unsubscribe();
-  }, [auth]);
+    };
+
+    fetchCurrentUser();
+  }, []);
 
   useEffect(() => {
     const calculateDistance = async () => {
-        // Only calculate if a freelancer is logged in and we have the necessary IDs
-        if (currentUser?.role === 'freelancer' && taskState.clientId) {
+        if (currentUser?.role === 'freelancer' && taskState.client_id) {
             try {
-                const posterDocRef = doc(db, 'users', taskState.clientId);
-                const posterDoc = await getDoc(posterDocRef);
-                if (posterDoc.exists()) {
-                    const posterData = posterDoc.data() as User;
-                    if (posterData.location && currentUser.location) {
-                        const dist = getDistanceInKm(currentUser.location, posterData.location);
-                        if (dist !== null) {
-                            setDistance(dist);
-                        }
+                const { data: posterData, error } = await supabase
+                  .from('users')
+                  .select('location')
+                  .eq('id', taskState.client_id)
+                  .single();
+
+                if (!error && posterData?.location && currentUser.location) {
+                    const dist = getDistanceInKm(
+                      currentUser.location.coordinates,
+                      posterData.location.coordinates
+                    );
+                    if (dist !== null) {
+                        setDistance(dist);
                     }
                 }
             } catch (error) {
@@ -107,7 +122,7 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
     if (!authLoading && currentUser) {
         calculateDistance();
     }
-  }, [currentUser, taskState.clientId, authLoading]);
+  }, [currentUser, taskState.client_id, authLoading]);
 
 
   const handleViewInterestedClick = () => {
@@ -162,7 +177,7 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
     if (authLoading) {
       setIsAccepting(false);
       return;
-    };
+    }
 
     if (!currentUser) {
       toast({ title: "Login Required", description: "You must be logged in to accept a task." });
@@ -177,52 +192,74 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
       return;
     }
 
-    const taskRef = doc(db, 'tasks', taskState.id);
-    const freelancerRef = doc(db, 'users', currentUser.id);
-
     try {
-      await runTransaction(db, async (transaction) => {
-        const taskDoc = await transaction.get(taskRef);
-        if (!taskDoc.exists() || taskDoc.data().status !== 'open') {
-          throw new Error("This task is no longer available.");
-        }
-        
-        const freelancerDoc = await transaction.get(freelancerRef);
-        if (!freelancerDoc.exists()) {
-          throw new Error("Freelancer user document not found.");
-        }
+      // Get latest task data
+      const { data: taskData, error: taskError } = await supabase
+        .from('tasks')
+        .select('*')
+        .eq('id', taskState.id)
+        .single();
 
-        const clientId = taskDoc.data().clientId;
-        const clientRef = doc(db, 'users', clientId);
-        const clientDoc = await transaction.get(clientRef);
-        if (!clientDoc.exists()) {
-          throw new Error("Client user document not found.");
-        }
+      if (taskError || !taskData || taskData.status !== 'open') {
+        throw new Error("This task is no longer available.");
+      }
 
-        // --- All WRITE operations must come after all READ operations ---
-        
-        // 1. Update task status and assign it
-        transaction.update(taskRef, { 
+      // Get freelancer data
+      const { data: freelancerData, error: freelancerError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', currentUser.id)
+        .single();
+
+      if (freelancerError || !freelancerData) {
+        throw new Error("Freelancer user not found.");
+      }
+
+      // Get client data
+      const { data: clientData, error: clientError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', taskData.client_id)
+        .single();
+
+      if (clientError || !clientData) {
+        throw new Error("Client user not found.");
+      }
+
+      // Update task
+      const { error: updateTaskError } = await supabase
+        .from('tasks')
+        .update({
           status: 'assigned',
-          assignedTo: currentUser.id,
-          assignedToName: currentUser.name || 'Anonymous',
-        });
+          assigned_to: currentUser.id,
+          assigned_to_name: currentUser.name || 'Anonymous',
+        })
+        .eq('id', taskState.id);
 
-        // 2. Update freelancer's active project count
-        const newFreelancerActiveProjects = (freelancerDoc.data().activeProjects || 0) + 1;
-        transaction.update(freelancerRef, { activeProjects: newFreelancerActiveProjects });
-        
-        // 3. Update client's active project count
-        const newClientActiveProjects = (clientDoc.data().activeProjects || 0) + 1;
-        transaction.update(clientRef, { activeProjects: newClientActiveProjects });
-      });
+      if (updateTaskError) throw updateTaskError;
+
+      // Update freelancer active projects
+      const { error: updateFreelancerError } = await supabase
+        .from('users')
+        .update({ active_projects: (freelancerData.active_projects || 0) + 1 })
+        .eq('id', currentUser.id);
+
+      if (updateFreelancerError) throw updateFreelancerError;
+
+      // Update client active projects
+      const { error: updateClientError } = await supabase
+        .from('users')
+        .update({ active_projects: (clientData.active_projects || 0) + 1 })
+        .eq('id', taskData.client_id);
+
+      if (updateClientError) throw updateClientError;
 
       toast({ title: 'Task Accepted!', description: "The task has been added to your active projects." });
       setTaskState(prev => ({ 
         ...prev, 
         status: 'assigned', 
-        assignedTo: currentUser.id,
-        assignedToName: currentUser.name,
+        assigned_to: currentUser.id,
+        assigned_to_name: currentUser.name,
       }));
     } catch (error: any) {
       console.error("Error accepting task:", error);
@@ -234,9 +271,14 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
   
   const handleDeleteTask = async () => {
       try {
-        await deleteDoc(doc(db, "tasks", taskState.id));
+        const { error } = await supabase
+          .from('tasks')
+          .delete()
+          .eq('id', taskState.id);
+
+        if (error) throw error;
+
         toast({ title: "Task Deleted", description: "The task has been successfully removed." });
-        // Optionally, trigger a parent component to refresh the list
       } catch (error) {
         console.error("Error deleting task:", error);
         toast({ variant: 'destructive', title: "Error", description: "Could not delete the task. Please try again." });
@@ -246,14 +288,14 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
   const renderPublicButtons = () => {
     if (taskState.status !== 'open') return null;
 
-    if (taskState.taskType === 'instant') {
+    if (taskState.task_type === 'instant') {
       return (
         <Button size="sm" onClick={handleAcceptTask} disabled={isAccepting || authLoading}>
           {isAccepting ? <><Zap className="mr-2 h-4 w-4 animate-spin" /> Accepting...</> : <><Zap className="mr-2 h-4 w-4" /> Accept Task</>}
         </Button>
       );
     }
-    if (taskState.taskType === 'discuss') {
+    if (taskState.task_type === 'discuss') {
       return (
         <div className="flex flex-col items-start gap-2">
             <div className="flex flex-wrap items-center gap-2">
@@ -298,9 +340,9 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-            {taskState.interestedCount > 0 && (
+            {taskState.interested_count > 0 && (
                  <Button size="sm" variant="outline" className="h-auto py-1 px-2" onClick={handleViewInterestedClick}>
-                    <Users className="mr-2 h-4 w-4" /> {taskState.interestedCount} interested. View
+                    <Users className="mr-2 h-4 w-4" /> {taskState.interested_count} interested. View
                 </Button>
             )}
         </div>
@@ -317,7 +359,7 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
                   {taskState.status}
                 </Badge>
               </div>
-              <CardDescription className="text-lg font-semibold text-primary pt-1">Budget: ₹{Number(taskState.posterWillPay).toLocaleString('en-IN') || 'Not specified'}</CardDescription>
+              <CardDescription className="text-lg font-semibold text-primary pt-1">Budget: ₹{Number(taskState.poster_will_pay).toLocaleString('en-IN') || 'Not specified'}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
                 <div className="flex flex-col gap-2 text-sm text-muted-foreground mb-4">
@@ -328,8 +370,8 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
                          </span>
                     )}
                     <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {taskState.timeframe}</span>
-                     {taskState.status === 'assigned' && taskState.assignedToName && (
-                        <span className="flex items-center gap-1.5 text-green-500 font-medium"><UserCheck className="w-4 h-4" /> Assigned to {taskState.assignedToName.split(' ')[0]}</span>
+                     {taskState.status === 'assigned' && taskState.assigned_to_name && (
+                        <span className="flex items-center gap-1.5 text-green-500 font-medium"><UserCheck className="w-4 h-4" /> Assigned to {taskState.assigned_to_name.split(' ')[0]}</span>
                     )}
                 </div>
                 <p className="text-sm text-foreground/80 line-clamp-3 mb-4">{taskState.description}</p>
@@ -341,20 +383,20 @@ export default function TaskCard({ task, viewContext = 'public' }: TaskCardProps
             <CardFooter className="bg-muted/50 p-4 flex justify-between items-center">
                 <div className="flex items-center gap-3">
                     <Avatar>
-                        <AvatarFallback>{taskState.posterName?.charAt(0).toUpperCase() || 'P'}</AvatarFallback>
+                        <AvatarFallback>{taskState.poster_name?.charAt(0).toUpperCase() || 'P'}</AvatarFallback>
                     </Avatar>
                     <div>
-                        <p className="font-semibold text-sm">{taskState.posterName}</p>
+                        <p className="font-semibold text-sm">{taskState.poster_name}</p>
                         <p className="text-xs text-muted-foreground">Task Poster</p>
                     </div>
                 </div>
                 { taskState.status === 'open' && (
                     <div className="flex items-center gap-2">
                         <Button variant="outline" size="icon" asChild>
-                            <a href={`mailto:${taskState.posterEmail}`}><Mail className="h-4 w-4" /></a>
+                            <a href={`mailto:${taskState.poster_email}`}><Mail className="h-4 w-4" /></a>
                         </Button>
                         <Button variant="outline" size="icon" asChild>
-                            <a href={`tel:${taskState.posterPhone}`}><Phone className="h-4 w-4" /></a>
+                            <a href={`tel:${taskState.poster_phone}`}><Phone className="h-4 w-4" /></a>
                         </Button>
                     </div>
                 )}
