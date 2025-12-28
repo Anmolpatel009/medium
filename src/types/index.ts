@@ -29,10 +29,8 @@ export interface User {
   email: string;
   phone?: string;
   address?: string;
-  location?: {
-    type: string;
-    coordinates: [number, number];
-  };
+  location_lat?: number;
+  location_lng?: number;
   role: 'freelancer' | 'client';
   created_at: string;
   updated_at: string;

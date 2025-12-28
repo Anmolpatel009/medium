@@ -11,6 +11,7 @@ import { Mail, Phone, Briefcase, MapPin, Star, MessageSquare } from 'lucide-reac
 interface FreelancerCardProps {
   freelancer: User;
   context?: 'directory' | 'task-interest' | 'featured';
+  distance?: number;
 }
 
 function getInitials(name?: string) {
@@ -23,8 +24,8 @@ function getInitials(name?: string) {
 }
 
 
-export default function FreelancerCard({ freelancer, context = 'directory' }: FreelancerCardProps) {
-    const profile = freelancer.freelancerProfile || {};
+export default function FreelancerCard({ freelancer, context = 'directory', distance }: FreelancerCardProps) {
+    const profile = freelancer.freelancer_profile || {};
 
     const skillsArray = Array.isArray(profile.skills) 
       ? profile.skills 

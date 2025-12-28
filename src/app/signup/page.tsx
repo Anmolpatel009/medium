@@ -115,35 +115,53 @@ function SignupFormComponent() {
     setIsSubmitting(true);
 
     try {
+      console.log('Starting signup with values:', values);
+
       // Create user with Supabase Auth
+      console.log('Calling supabase.auth.signUp...');
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
       });
 
-      if (authError) throw authError;
-      
-      if (!authData.user) throw new Error('User creation failed');
-      
-      if (!authData.user.id) throw new Error('Auth user ID is null or undefined');
+      console.log('signUp response:', { data: authData, error: authError });
 
-      const [lat, lng] = values.location ? values.location.split(',').map(coord => parseFloat(coord.trim())) : [0, 0];
+      if (authError) {
+        console.error('Auth error:', authError);
+        throw authError;
+      }
+
+      if (!authData.user) {
+        console.error('No user in auth data');
+        throw new Error('User creation failed');
+      }
+
+      if (!authData.user.id) {
+        console.error('Auth user ID is null');
+        throw new Error('Auth user ID is null or undefined');
+      }
+
+      console.log('Auth user created:', authData.user.id);
+
+      const [lat, lng] = values.location ? values.location.split(',').map(coord => parseFloat(coord.trim())) : [null, null];
+      console.log('Parsed location:', { lat, lng });
 
       const userData: any = {
-        uid: authData.user.id,
-        email: values.email,
-        name: values.name,
-        phone: values.phone || '',
-        address: values.address || '',
-        role: values.role,
-        active_projects: 0,
-        completed_projects: 0,
-        tasks_applied: 0,
-        total_earnings: 0,
-        unread_messages: 0,
-        location_lat: lat || null,
-        location_lng: lng || null,
-      };
+         id: authData.user.id,
+         uid: authData.user.id,
+         email: values.email,
+         name: values.name,
+         phone: values.phone || '',
+         address: values.address || '',
+         role: values.role,
+         active_projects: 0,
+         completed_projects: 0,
+         tasks_applied: 0,
+         total_earnings: 0,
+         unread_messages: 0,
+         location_lat: lat,
+         location_lng: lng,
+       };
 
       if (values.role === 'freelancer') {
         userData.freelancer_profile = {
@@ -159,28 +177,45 @@ function SignupFormComponent() {
           industry: values.industry || '',
         };
       }
-      
+
+      console.log('User data to insert:', userData);
+
       // Insert user data into users table
-      const { error: dbError } = await supabase
+      console.log('Calling supabase.from(users).insert...');
+      const { data: insertData, error: dbError } = await supabase
         .from('users')
         .insert([userData]);
 
-      if (dbError) throw dbError;
+      console.log('Insert response:', { data: insertData, error: dbError });
 
-      toast({ 
-        title: 'Success!', 
+      if (dbError) {
+        console.error('DB insert error:', dbError);
+        throw dbError;
+      }
+
+      console.log('Signup successful');
+      toast({
+        title: 'Success!',
         description: 'Your account has been created. Please check your email for a verification link.',
         duration: 5000,
        });
       router.push('/login');
 
     } catch (error: any) {
-      console.error('Signup error:', error);
+      console.error('Signup error caught:', error);
+      const prettyError = (() => {
+        try {
+          return JSON.stringify(error, Object.getOwnPropertyNames(error));
+        } catch {
+          return String(error);
+        }
+      })();
+      console.error('Signup error (raw):', error, 'stringified:', prettyError);
       console.error('Error details:', {
         message: error?.message,
         code: error?.code,
         status: error?.status,
-        fullError: JSON.stringify(error)
+        fullError: prettyError
       });
       toast({ variant: 'destructive', title: 'Error', description: error?.message || error?.error_description || 'Failed to create account. Please try again.' });
     } finally {
