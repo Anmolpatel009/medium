@@ -13,6 +13,12 @@ export default function TaskList() {
 
   useEffect(() => {
     const fetchTasks = async () => {
+      if (!supabase) {
+        console.error('Supabase client not available');
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('tasks')
         .select('*')

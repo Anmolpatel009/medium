@@ -14,6 +14,12 @@ export function useAuth() {
   const { toast } = useToast();
 
   useEffect(() => {
+    if (!supabase) {
+      console.error('Supabase client not available');
+      setLoading(false);
+      return;
+    }
+
     // Check current user on mount
     supabase.auth.getUser().then(({ data: { user }, error }) => {
       if (error) {
@@ -35,7 +41,7 @@ export function useAuth() {
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase!.auth.onAuthStateChange((event, session) => {
       console.log('Auth state change:', event, session ? 'session present' : 'no session');
       if (event === 'SIGNED_OUT' || !session) {
         setUser(null);
@@ -51,6 +57,15 @@ export function useAuth() {
   }, [toast]);
 
   const logout = async () => {
+    if (!supabase) {
+      toast({
+        variant: 'destructive',
+        title: 'Logout Failed',
+        description: 'Database connection not available.',
+      });
+      return;
+    }
+
     try {
       await supabase.auth.signOut();
       toast({

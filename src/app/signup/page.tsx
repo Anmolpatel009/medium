@@ -112,6 +112,11 @@ function SignupFormComponent() {
 
 
   const onSubmit = async (values: FormData) => {
+    if (!supabase) {
+      toast({ variant: 'destructive', title: 'Error', description: 'Database connection not available. Please try again later.' });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {

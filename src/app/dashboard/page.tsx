@@ -18,9 +18,15 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const fetchUser = async () => {
+      if (!supabase) {
+        console.error('Supabase client not available');
+        router.push('/login');
+        return;
+      }
+
       try {
         const { data: { user: authUser } } = await supabase.auth.getUser();
-        
+
         if (!authUser) {
           router.push('/login');
           return;
